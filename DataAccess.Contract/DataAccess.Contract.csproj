@@ -7,7 +7,7 @@
     <ProjectGuid>{79A663D1-8433-46B1-A1CB-9F8B7C147593}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DataAccess.Contract</RootNamespace>
+    <RootNamespace>Cashed.DataAccess.Contract</RootNamespace>
     <AssemblyName>DataAccess.Contract</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
