@@ -1,0 +1,37 @@
+﻿@model List<Logic.Cashed.Contract.Models.CategoryModel>
+@{
+    ViewBag.Title = "Категории";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>
+                Номер
+            </th>
+            <th>
+                Имя
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 0; i < Model.Count; i++)
+        {
+            <tr>
+                <td>@Model[i].Id</td>
+                <td>@Model[i].Name</td>
+            </tr>
+        }
+    </tbody>
+</table>
+@Html.ActionLink("Добавить", "Add", "Category", null, 
+    new { id = "categoriesLink", @class = "btn btn-outline-primary btn-sm" })
+
+@section Scripts
+{
+    <script type="text/javascript">
+        activateLink("#categoriesLink");
+    </script>
+}
+
