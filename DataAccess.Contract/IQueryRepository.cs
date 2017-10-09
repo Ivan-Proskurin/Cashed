@@ -7,6 +7,5 @@ namespace Cashed.DataAccess.Contract
     {
         IQueryable<T> Query { get; }
         Task<T> GetById(int id);
-        Task<T> GetByName(string name);
     }
 }

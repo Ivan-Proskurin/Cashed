@@ -43,7 +43,7 @@ namespace Logic.Cashed.Logic
 
         public async Task<CategoryModel> GetByName(string name)
         {
-            var category = await _unitOfWork.GetQueryRepository<Category>().GetByName(name);
+            var category = await _unitOfWork.GetNamedModelQueryRepository<Category>().GetByName(name);
             if (category == null) return null;
             return new CategoryModel
             {

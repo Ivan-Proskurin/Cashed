@@ -20,7 +20,7 @@ namespace Cashed.DataAccess.Db
             _commandRepositories = new Dictionary<Type, object>();
         }
 
-        public void UpdateModel<TModel>(TModel model) where TModel : class, IHasName, IHasId
+        public void UpdateModel<TModel>(TModel model) where TModel : class, IHasId
         {
             var cmdRep = GetCommandRepository<TModel>();
             cmdRep.Update(model);
@@ -32,7 +32,7 @@ namespace Cashed.DataAccess.Db
             await _context.SaveChangesAsync();
         }
 
-        public ICommandRepository<T> GetCommandRepository<T>() where T : class, IHasName, IHasId
+        public ICommandRepository<T> GetCommandRepository<T>() where T : class, IHasId
         {
             _commandRepositories.TryGetValue(typeof(T), out object repo);
             if (repo != null) return repo as ICommandRepository<T>;
@@ -52,7 +52,7 @@ namespace Cashed.DataAccess.Db
             return null;
         }
 
-        public IQueryRepository<T> GetQueryRepository<T>() where T : class, IHasName, IHasId
+        public IQueryRepository<T> GetQueryRepository<T>() where T : class, IHasId
         {
             _queryRepositories.TryGetValue(typeof(T), out object repo);
             if (repo != null) return repo as IQueryRepository<T>;
@@ -65,6 +65,26 @@ namespace Cashed.DataAccess.Db
                 {
                     var pValue = p.GetValue(_context, new object[0]);
                     var qr = new QueryRepository<T>(pValue as DbSet<T>);
+                    _queryRepositories.Add(typeof(T), qr);
+                    return qr;
+                }
+            }
+            return null;
+        }
+
+        public INamedModelQueryRepository<T> GetNamedModelQueryRepository<T>() where T : class, IHasId, IHasName
+        {
+            _queryRepositories.TryGetValue(typeof(T), out object repo);
+            if (repo != null) return repo as INamedModelQueryRepository<T>;
+            var props = _context.GetType().GetProperties();
+            foreach (var p in props)
+            {
+                var pType = p.PropertyType;
+                var gArgs = pType.GenericTypeArguments;
+                if (gArgs.Length > 0 && gArgs[0] == typeof(T))
+                {
+                    var pValue = p.GetValue(_context, new object[0]);
+                    var qr = new NamedModelQueryRepository<T>(pValue as DbSet<T>);
                     _queryRepositories.Add(typeof(T), qr);
                     return qr;
                 }

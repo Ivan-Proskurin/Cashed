@@ -40,7 +40,7 @@ namespace Logic.Cashed.Logic
             }
             else
             {
-                var categoriesQueries = _unitOfWork.GetQueryRepository<Category>();
+                var categoriesQueries = _unitOfWork.GetNamedModelQueryRepository<Category>();
                 if (await categoriesQueries.GetByName(model.Name) != null)
                     throw new ArgumentException("Категория с таким именем уже существует");
                 categoryRespoitory.Create(

@@ -26,6 +26,8 @@ namespace Cashed.DataAccess.Db.Migrations
             //      new Person { FullName = "Rowan Miller" }
             //    );
             //
+
+
         }
     }
 }

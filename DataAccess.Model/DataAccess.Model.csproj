@@ -42,10 +42,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Basic\Category.cs" />
-    <Compile Include="Basic\IHasId.cs" />
-    <Compile Include="Basic\IHasName.cs" />
     <Compile Include="Basic\Product.cs" />
+    <Compile Include="Expenses\ExpenseBill.cs" />
+    <Compile Include="Expenses\ExpenseItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DataAccess.Contract\DataAccess.Contract.csproj">
+      <Project>{79a663d1-8433-46b1-a1cb-9f8b7c147593}</Project>
+      <Name>DataAccess.Contract</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

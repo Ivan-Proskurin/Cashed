@@ -12,13 +12,13 @@ namespace Cashed.DataAccess.Db.Tests
     [TestClass]
     public class CategoriesCommandsTests
     {
-        private readonly Mock<IQueryRepository<Category>> _queriesMock;
+        private readonly Mock<INamedModelQueryRepository<Category>> _queriesMock;
         private readonly Mock<ICommandRepository<Category>> _commandsMock;
         private readonly Mock<IUnitOfWork> _uowMock;
 
         public CategoriesCommandsTests()
         {
-            _queriesMock = new Mock<IQueryRepository<Category>>();
+            _queriesMock = new Mock<INamedModelQueryRepository<Category>>();
             _queriesMock.Setup(m => m.GetByName(It.IsAny<string>())).Returns<Category>(null);
             _commandsMock = new Mock<ICommandRepository<Category>>();
             _commandsMock.Setup(m => m.Create(It.IsAny<Category>()));
