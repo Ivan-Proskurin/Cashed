@@ -9,3 +9,7 @@
 .navbar-brand {
     font-size: 24px;
 }
+
+a.edit-item-link {
+    color: #444;
+}

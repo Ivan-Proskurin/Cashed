@@ -1,0 +1,27 @@
+﻿@model Cashed.View.Models.EditCategoryViewModel
+@{
+    ViewBag.Title = "Категория";
+}
+
+<h2>Редактирование категории</h2>
+<br />
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+    <div class="form-group">
+        @Html.LabelFor(m => m.Id, null, new { @class = "form-control-label" })
+        @Html.TextBoxFor(m => m.Id, null, new { @class = "form-control", @disabled = "disabled" } )
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Name, null, new { @class = "form-control-label" })*
+        @Html.ValidationMessageFor(m => m.Name)
+        @Html.TextBoxFor(m => m.Name, null, new { @class = "form-control" })
+    </div>
+    <button type="submit" class="btn btn-outline-primary btn-sm">Сохранить</button>
+    @Html.ActionLink("Отмена", "Index", "Category", null, new
+    {
+        id = "categoriesLink",
+        @class = "btn btn-outline-danger btn-sm"
+    })
+}
+

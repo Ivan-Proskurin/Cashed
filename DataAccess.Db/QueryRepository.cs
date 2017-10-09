@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Cashed.DataAccess.Db
 {
-    public class QueryRepository<T> : IQueryRepository<T> where T : class, IHasName
+    public class QueryRepository<T> : IQueryRepository<T> where T : class, IHasName, IHasId
     {
         private DbSet<T> _dbSet;
 
@@ -24,6 +24,11 @@ namespace Cashed.DataAccess.Db
                 throw new ArgumentNullException("name");
             var model = await Query.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower());
             return model;
+        }
+
+        public async Task<T> GetById(int id)
+        {
+            return await Query.FirstOrDefaultAsync(x => x.Id == id);
         }
     }
 }

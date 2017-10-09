@@ -6,6 +6,7 @@ namespace Cashed.DataAccess.Contract
     public interface IQueryRepository<T> where T : class
     {
         IQueryable<T> Query { get; }
+        Task<T> GetById(int id);
         Task<T> GetByName(string name);
     }
 }

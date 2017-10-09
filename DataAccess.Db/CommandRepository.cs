@@ -1,9 +1,10 @@
 ﻿using Cashed.DataAccess.Contract;
+using Cashed.DataAccess.Model.Basic;
 using System.Data.Entity;
 
 namespace Cashed.DataAccess.Db
 {
-    public class CommandRepository<T> : ICommandRepository<T> where T : class
+    public class CommandRepository<T> : ICommandRepository<T> where T : class, IHasId
     {
         private DbSet<T> _dbSet;
 

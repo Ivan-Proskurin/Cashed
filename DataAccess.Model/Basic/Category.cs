@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Cashed.DataAccess.Model
 {
-    public class Category : IHasName
+    public class Category : IHasName, IHasId
     {
         public int Id { get; set; }
         [Required]

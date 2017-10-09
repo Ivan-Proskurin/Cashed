@@ -20,12 +20,19 @@ namespace Cashed.DataAccess.Db
             _commandRepositories = new Dictionary<Type, object>();
         }
 
+        public void UpdateModel<TModel>(TModel model) where TModel : class, IHasName, IHasId
+        {
+            var cmdRep = GetCommandRepository<TModel>();
+            cmdRep.Update(model);
+            _context.Entry(model).State = EntityState.Modified;
+        }
+
         public async Task Commit()
         {
             await _context.SaveChangesAsync();
         }
 
-        public ICommandRepository<T> GetCommandRepository<T>() where T : class, IHasName
+        public ICommandRepository<T> GetCommandRepository<T>() where T : class, IHasName, IHasId
         {
             _commandRepositories.TryGetValue(typeof(T), out object repo);
             if (repo != null) return repo as ICommandRepository<T>;
@@ -45,7 +52,7 @@ namespace Cashed.DataAccess.Db
             return null;
         }
 
-        public IQueryRepository<T> GetQueryRepository<T>() where T : class, IHasName
+        public IQueryRepository<T> GetQueryRepository<T>() where T : class, IHasName, IHasId
         {
             _queryRepositories.TryGetValue(typeof(T), out object repo);
             if (repo != null) return repo as IQueryRepository<T>;
