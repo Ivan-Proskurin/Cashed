@@ -2,7 +2,7 @@
 
 namespace Logic.Cashed.Contract
 {
-    public interface ICategoriesQueries : ICommonModelQueries<CategoryModel>
+    public interface ICategoriesCommands : IGenericModelCommands<CategoryModel>
     {
     }
 }

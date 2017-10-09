@@ -1,7 +1,20 @@
-﻿
+﻿@model Cashed.View.Models.AddCategoryViewModel
 @{
     ViewBag.Title = "Новая категория";
 }
 
 <h2>Добавление новой категории</h2>
+<br />
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+    <div class="form-group">
+        @Html.LabelFor(m => m.Name)*<br/>
+        @Html.ValidationMessageFor(m => m.Name)
+        @Html.EditorFor(m => m.Name, null, new { @class = "form-control" })
+    </div>
+    <button type="submit" class="btn btn-outline-primary btn-sm">Добавить</button>
+    @Html.ActionLink("Отмена", "Index", "Category", null, new { id = "categoriesLink",
+        @class = "btn btn-outline-danger btn-sm" })
+}
 

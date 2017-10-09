@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using Cashed.DataAccess.Model.Basic;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Cashed.DataAccess.Model
 {
-    public class Category
+    public class Category : IHasName
     {
         public int Id { get; set; }
         [Required]

@@ -1,7 +1,9 @@
 ﻿using Cashed.DataAccess.Contract;
+using Cashed.DataAccess.Model.Basic;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Threading.Tasks;
 
 namespace Cashed.DataAccess.Db
 {
@@ -18,12 +20,12 @@ namespace Cashed.DataAccess.Db
             _commandRepositories = new Dictionary<Type, object>();
         }
 
-        public async void Commit()
+        public async Task Commit()
         {
             await _context.SaveChangesAsync();
         }
 
-        public ICommandRepository<T> GetCommandRepository<T>() where T : class
+        public ICommandRepository<T> GetCommandRepository<T>() where T : class, IHasName
         {
             _commandRepositories.TryGetValue(typeof(T), out object repo);
             if (repo != null) return repo as ICommandRepository<T>;
@@ -43,7 +45,7 @@ namespace Cashed.DataAccess.Db
             return null;
         }
 
-        public IQueryRepository<T> GetQueryRepository<T>() where T : class
+        public IQueryRepository<T> GetQueryRepository<T>() where T : class, IHasName
         {
             _queryRepositories.TryGetValue(typeof(T), out object repo);
             if (repo != null) return repo as IQueryRepository<T>;

@@ -14,17 +14,17 @@ namespace Cashed.DataAccess.Db
 
         public void Create(T model)
         {
-            throw new System.NotImplementedException();
+            _dbSet.Add(model);
         }
 
         public void Delete(T model)
         {
-            throw new System.NotImplementedException();
+            _dbSet.Remove(model);
         }
 
         public void Update(T model)
         {
-            throw new System.NotImplementedException();
+            _dbSet.Attach(model);
         }
     }
 }

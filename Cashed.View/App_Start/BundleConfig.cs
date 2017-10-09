@@ -24,7 +24,8 @@ namespace Cashed.View
                       "~/Scripts/respond.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                "~/Content/main.css"));
+                "~/Content/main.css",
+                "~/Content/validation.css"));
 
             bundles.Add(new ScriptBundle("~/bundles/scripts").Include(
                 "~/Scripts/helpers.js"));

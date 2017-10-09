@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Cashed.View.Models
 {
@@ -6,6 +7,7 @@ namespace Cashed.View.Models
     {
         [Required]
         [StringLength(50)]
+        [DisplayName("Имя категории")]
         public string Name { get; set; }
     }
 }

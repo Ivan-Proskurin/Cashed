@@ -19,6 +19,7 @@ namespace Cashed.View.App_Start
         {
             _kernel.Bind<IUnitOfWork>().To<CashedDatabaseUnitOfWork>();
             _kernel.Bind<ICategoriesQueries>().To<CategoriesQueries>();
+            _kernel.Bind<ICategoriesCommands>().To<CategoriesCommands>();
         }
     }
 }

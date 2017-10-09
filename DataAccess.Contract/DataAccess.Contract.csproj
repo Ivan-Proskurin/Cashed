@@ -45,5 +45,11 @@
     <Compile Include="IUnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DataAccess.Model\DataAccess.Model.csproj">
+      <Project>{0f104b15-d75c-4e65-a98b-2a6a1578d82d}</Project>
+      <Name>DataAccess.Model</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,10 +1,13 @@
 ﻿using Cashed.DataAccess.Contract;
+using Cashed.DataAccess.Model.Basic;
+using System;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Cashed.DataAccess.Db
 {
-    public class QueryRepository<T> : IQueryRepository<T> where T : class
+    public class QueryRepository<T> : IQueryRepository<T> where T : class, IHasName
     {
         private DbSet<T> _dbSet;
 
@@ -14,5 +17,13 @@ namespace Cashed.DataAccess.Db
         }
 
         public IQueryable<T> Query => _dbSet;
+
+        public async Task<T> GetByName(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentNullException("name");
+            var model = await Query.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower());
+            return model;
+        }
     }
 }

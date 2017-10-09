@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Cashed.DataAccess.Model.Basic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Cashed.DataAccess.Model
 {
-    public class Product
+    public class Product : IHasName
     {
         public int Id { get; set; }
         public int CategoryId { get; set; }

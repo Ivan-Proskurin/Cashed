@@ -18,7 +18,7 @@ namespace Logic.Cashed.Logic
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<List<CategoryModel>> GetAllCategories()
+        public async Task<List<CategoryModel>> GetAll()
         {
             var repo = _unitOfWork.GetQueryRepository<Category>();
             return await repo.Query.Select(x => new CategoryModel
@@ -27,6 +27,29 @@ namespace Logic.Cashed.Logic
                 Name = x.Name
             }
             ).ToListAsync();
+        }
+
+        public async Task<CategoryModel> GetById(int id)
+        {
+            var repo = _unitOfWork.GetQueryRepository<Category>();
+            return await repo.Query.Where(x => x.Id == id)
+                .Select(x => new CategoryModel
+                {
+                    Id = x.Id,
+                    Name = x.Name
+                }
+            ).FirstOrDefaultAsync();
+        }
+
+        public async Task<CategoryModel> GetByName(string name)
+        {
+            var category = await _unitOfWork.GetQueryRepository<Category>().GetByName(name);
+            if (category == null) return null;
+            return new CategoryModel
+            {
+                Id = category.Id,
+                Name = category.Name
+            };
         }
     }
 }
