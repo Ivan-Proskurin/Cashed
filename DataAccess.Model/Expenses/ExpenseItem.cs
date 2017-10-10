@@ -15,5 +15,8 @@ namespace Cashed.DataAccess.Model.Expenses
         public decimal Price { get; set; }
         public decimal Quantity { get; set; }
         public string Comment { get; set; }
+        public int BillId { get; set; }
+        [ForeignKey("BillId")]
+        public ExpenseBill Bill {get; set;}
     }
 }

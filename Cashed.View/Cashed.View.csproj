@@ -191,6 +191,8 @@
     </Compile>
     <Compile Include="Models\AddCategoryViewModel.cs" />
     <Compile Include="Models\EditCategoryViewModel.cs" />
+    <Compile Include="Models\ExpensesBillListViewModel.cs" />
+    <Compile Include="Models\ExpensesBillsViewList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

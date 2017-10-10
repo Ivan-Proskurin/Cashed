@@ -43,8 +43,10 @@
     <Compile Include="ICategoriesCommands.cs" />
     <Compile Include="ICategoriesQueries.cs" />
     <Compile Include="ICommonModelQueries.cs" />
+    <Compile Include="IExpensesBillQueries.cs" />
     <Compile Include="IGenericModelCommands.cs" />
     <Compile Include="Models\CategoryModel.cs" />
+    <Compile Include="Models\ExpensesBillModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

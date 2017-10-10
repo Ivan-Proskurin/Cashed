@@ -58,6 +58,10 @@
     <Compile Include="Migrations\201710091539511_Expenses.Designer.cs">
       <DependentUpon>201710091539511_Expenses.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201710091754197_Expsense_Upgrade.cs" />
+    <Compile Include="Migrations\201710091754197_Expsense_Upgrade.Designer.cs">
+      <DependentUpon>201710091754197_Expsense_Upgrade.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NamedModelQueryRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -73,6 +77,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201710091539511_Expenses.resx">
       <DependentUpon>201710091539511_Expenses.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710091754197_Expsense_Upgrade.resx">
+      <DependentUpon>201710091754197_Expsense_Upgrade.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

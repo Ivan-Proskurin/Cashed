@@ -1,9 +1,30 @@
-﻿
+﻿@model Cashed.View.Models.ExpensesBillsViewList
 @{
     ViewBag.Title = "Расходы";
 }
 
-<h2>Расходы</h2>
+<h4>Счета</h4>
+<table class="table table-striped table-hover">
+    <thead class="thead-inverse">
+        <tr>
+            <th>Дата/время</th>
+            <th>Категория</th>
+            <th>Общая сумма</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 0; i < Model.Bills.Count; i++)
+        {
+            var bill = Model.Bills[i];
+
+            <tr data-id="@bill.Id">
+                <td>@bill.DateTime</td>
+                <td>@bill.Category</td>
+                <td>@bill.Cost</td>
+            </tr>
+        }
+    </tbody>
+</table>
 
 @section Scripts
 {
