@@ -3,8 +3,12 @@
     ViewBag.Title = "Расходы";
 }
 
-<h4>Счета</h4>
-<table class="table table-striped table-hover">
+<div>
+    <span class="expenses-header">Счета</span>
+@*    <span><button class="btn btn-primary btn-sm">Добавить новый</button></span>*@
+    @Html.ActionLink("Добавить новый", "Add", null, new { @class = "btn btn-primary btn-sm" })
+</div>
+<table class="expenses-table table table-striped table-hover">
     <thead class="thead-inverse">
         <tr>
             <th>Дата/время</th>

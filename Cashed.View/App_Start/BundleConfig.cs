@@ -25,7 +25,8 @@ namespace Cashed.View
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                 "~/Content/main.css",
-                "~/Content/validation.css"));
+                "~/Content/validation.css",
+                "~/Content/font-awesome.css"));
 
             bundles.Add(new ScriptBundle("~/bundles/scripts").Include(
                 "~/Scripts/helpers.js"));

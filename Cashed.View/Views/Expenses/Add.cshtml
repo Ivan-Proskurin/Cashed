@@ -1,0 +1,97 @@
+﻿
+@{
+    ViewBag.Title = "Новый счет";
+}
+
+<h3 class="form-caption-bg">Новый счет</h3>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="container">
+                <div class="row">
+                    <div class="col col-sm-9">
+                        <h5 class="form-caption">Ввод:</h5>
+                    </div>
+                    <div class="col col-sm-3">
+                        <button class="btn btn-primary btn-sm">Ввести еще</button>
+                    </div>
+                </div>
+            </div>
+            @using (Html.BeginForm())
+            {
+                <div class="form-group row">
+                    <label class="col-form-label col-md-3" for="datepicker">Дата/время</label>
+                    <div id='datepicker' class='input-group date col-md-9' >
+                        <input id="datepicker-input" type='text' class="form-control" />
+                        <span class="input-group-addon" id="date-picker-button">
+                            <i class="fa fa-calendar"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="Category" class="col-form-label col-md-3">Категория</label>
+                    <div class="col-md-9">
+                        <input id="Category" type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="Product" class="col-form-label col-md-3">Продукт</label>
+                    <div class="col-md-9">
+                        <input id="Product" type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="Price" class="col-form-label col-md-3">Цена</label>
+                    <div class="col-md-3">
+                        <input id="Price" type="text" class="form-control" />
+                    </div>
+                    <label for="Quantity" class="col-form-label col-md-3">Количество</label>
+                    <div class="col-md-3">
+                        <input id="Quantity" type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="Comment" class="col-form-label col-md-3">Комментарий</label>
+                    <div class="col-md-9">
+                        <input id="Comment" type="text" class="form-control" />
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="col">
+            <h5 class="form-caption">Итог:</h5>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#datepicker").datetimepicker({
+                onSelectDate: propagateDateTimeToPicker,
+                onSelectTime: propagateDateTimeToPicker,
+                dayOfWeekStart: 1,
+                closeOnDateSelect: true
+            });
+
+        });
+
+        function propagateDateTimeToPicker(dt) {
+            $("#datepicker-input").val(formatDateTime(dt));
+        }
+
+        function formatDateTime(dt) {
+            var year = dt.getFullYear();
+            var month = dt.getMonth();
+            if (month < 10) month = "0" + month;
+            var day = dt.getDate();
+            if (day < 10) day = "0" + day;
+            var hours = dt.getHours();
+            if (hours == 0) hours = "00";
+            else if (hours < 0) hours = "0" + hours;
+            return year + "." + month + "." + day + " " + hours + ":00";
+        }
+    </script>
+}
+

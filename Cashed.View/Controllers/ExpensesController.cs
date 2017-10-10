@@ -30,5 +30,10 @@ namespace Cashed.View.Controllers
                 }).ToList()
             });
         }
+
+        public ActionResult Add()
+        {
+            return View();
+        }
     }
 }

@@ -66,7 +66,7 @@ namespace Logic.Cashed.Logic
                 models.Add(bill);
             }
 
-            return models;
+            return models.OrderByDescending(x => x.DateTime).ThenByDescending(x => x.Cost).ToList();
         }
 
         public Task<ExpensesBillModel> GetById(int id)
