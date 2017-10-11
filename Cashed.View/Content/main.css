@@ -32,3 +32,36 @@ a.edit-item-link {
 .form-caption-bg {
     margin-bottom: 30px;
 }
+
+.column-header-col {
+    padding-left: 0;
+}
+
+.expenses-subtotals {
+    font-size: 12px;
+}
+
+.subtotals-placeholder {
+    border-bottom: 1px dashed #909090;
+}
+
+.subtotal-expenses-table{
+    padding: 0;
+    margin-top: 10px;
+}
+
+.expenses-sum {
+    text-align: right;
+}
+
+.expenses-sum::after {
+    content: "р."
+}
+
+.expenses-totals {
+    margin-bottom: 30px;
+}
+
+.expenses-subtotals-row {
+    margin-top: 3px;
+}

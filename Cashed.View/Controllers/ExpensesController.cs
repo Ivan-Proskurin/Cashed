@@ -1,5 +1,6 @@
 ﻿using Cashed.View.Models;
 using Logic.Cashed.Contract;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -9,10 +10,13 @@ namespace Cashed.View.Controllers
     public class ExpensesController : Controller
     {
         private readonly IExpensesBillQueries _expensesBillQueries;
+        private readonly ICategoriesQueries _categoriesQueries;
 
-        public ExpensesController(IExpensesBillQueries expensesBillQueries)
+        public ExpensesController(IExpensesBillQueries expensesBillQueries,
+            ICategoriesQueries categoriesQueries)
         {
             _expensesBillQueries = expensesBillQueries;
+            _categoriesQueries = categoriesQueries;
         }
 
         // GET: Expenses
@@ -31,9 +35,21 @@ namespace Cashed.View.Controllers
             });
         }
 
-        public ActionResult Add()
+        public async Task<ActionResult> Add()
         {
-            return View();
+            var model = new ExpensesBillViewModel
+            {
+                DateTime = DateTime.Now.ToString("yyyy.MM.dd HH:mm")
+            };
+            var categories = await _categoriesQueries.GetAll();
+            model.AvailCategories = categories.Select(x => x.Name).OrderBy(x => x).ToList();
+            return View(model);
+        }
+
+        public async Task<JsonResult> GetCategoryProducts(string category)
+        {
+            var products = await _categoriesQueries.GetProductsByCategoryName(category);
+            return Json(products.Select(x => x.Name).OrderBy(x => x).ToList(), JsonRequestBehavior.AllowGet);
         }
     }
 }

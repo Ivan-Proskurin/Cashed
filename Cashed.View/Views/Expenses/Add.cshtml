@@ -1,4 +1,4 @@
-﻿
+﻿@model Cashed.View.Models.ExpensesBillViewModel
 @{
     ViewBag.Title = "Новый счет";
 }
@@ -7,22 +7,23 @@
 <div class="container">
     <div class="row">
         <div class="col">
-            <div class="container">
-                <div class="row">
-                    <div class="col col-sm-9">
-                        <h5 class="form-caption">Ввод:</h5>
-                    </div>
-                    <div class="col col-sm-3">
-                        <button class="btn btn-primary btn-sm">Ввести еще</button>
-                    </div>
-                </div>
-            </div>
             @using (Html.BeginForm())
             {
+                <div class="container">
+                    <div class="row">
+                        <div class="column-header-col col col-sm-9">
+                            <h5 class="form-caption">Ввод:</h5>
+                        </div>
+                        <div class="col col-sm-3">
+                            <button type="submit" class="btn btn-primary btn-sm">Ввести еще</button>
+                        </div>
+                    </div>
+                </div>               
                 <div class="form-group row">
                     <label class="col-form-label col-md-3" for="datepicker">Дата/время</label>
                     <div id='datepicker' class='input-group date col-md-9' >
-                        <input id="datepicker-input" type='text' class="form-control" />
+                        <input id="datepicker-input" type='text' class="form-control" 
+                               value="@Model.DateTime"/>
                         <span class="input-group-addon" id="date-picker-button">
                             <i class="fa fa-calendar"></i>
                         </span>
@@ -30,15 +31,17 @@
                 </div>
                 <div class="form-group row">
                     <label for="Category" class="col-form-label col-md-3">Категория</label>
-                    <div class="col-md-9">
-                        <input id="Category" type="text" class="form-control" />
-                    </div>
+                    <input id="Category" type="text" class="form-control" list="categoryList"/>
+                    <datalist id="categoryList">
+                        @foreach (var category in Model.AvailCategories)
+                        {
+                            <option>@category</option>
+                        }
+                    </datalist>
                 </div>
                 <div class="form-group row">
                     <label for="Product" class="col-form-label col-md-3">Продукт</label>
-                    <div class="col-md-9">
-                        <input id="Product" type="text" class="form-control" />
-                    </div>
+                    <input id="Product" type="text" class="form-control"/>
                 </div>
                 <div class="form-group row">
                     <label for="Price" class="col-form-label col-md-3">Цена</label>
@@ -59,7 +62,63 @@
             }
         </div>
         <div class="col">
-            <h5 class="form-caption">Итог:</h5>
+            <div class="container">
+                <div class="row">
+                    <div class="column-header-col col col-sm-9">
+                        <h5 class="form-caption">Итог:</h5>
+                    </div>
+                    <div class="col col-sm-3">
+                        <button class="btn btn-danger btn-sm">Подтвердить</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="row expenses-totals">
+                    <div class="column-header-col col col-sm-5">
+                        <span class="expenses-subtotals">Промежуточный итог:</span>
+                    </div>
+                    <div class="subtotals-placeholder col col-sm-4">
+                        <span>за 2017.10.09</span>
+                    </div>
+                    <div class="expenses-subtotals expenses-sum col col-sm-3">
+                        <span>4346,67</span>
+                    </div>
+                </div>
+                <div class="row expenses-subtotals-row">
+                    <div class="expenses-subtotals col col-sm-5">
+                        <span>#1 Мясо по корейски</span>
+                    </div>
+                    <div class="expenses-subtotals col col-sm-4">
+                        <span>Продукты питания</span>
+                    </div>
+                    <div class="expenses-subtotals expenses-sum col col-sm-3">
+                        <span>569,45</span>
+                    </div>
+                </div>
+                <div class="row expenses-subtotals-row">
+                    <div class="expenses-subtotals col col-sm-5">
+                        <span>#2 Рыба вяленая</span>
+                    </div>
+                    <div class="expenses-subtotals col col-sm-4">
+                        <span>Продукты питания</span>
+                    </div>
+                    <div class="expenses-subtotals col expenses-sum col-sm-3">
+                        <span>235,40</span>
+                    </div>
+                </div>
+                <div class="row expenses-subtotals-row">
+                    <div class="expenses-subtotals col col-sm-5">
+                        <span>#3 Телевизор плазменный</span>
+                    </div>
+                    <div class="expenses-subtotals col col-sm-4">
+                        <span>Бытовая техника</span>
+                    </div>
+                    <div class="expenses-subtotals col expenses-sum col-sm-3">
+                        <span>76500</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -91,6 +150,31 @@
             if (hours == 0) hours = "00";
             else if (hours < 0) hours = "0" + hours;
             return year + "." + month + "." + day + " " + hours + ":00";
+        }
+
+        makeInputAutocomplete("Category", null, function () {
+            updateProducts($("#Category").val());
+        });
+        var productsAutocomplete = makeInputAutocomplete("Product", []);
+
+        makeInputNumeric("Price");
+        makeInputNumeric("Quantity");
+
+        function updateProducts(category) {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetCategoryProducts", "Expenses")',
+                contentType: "application/json; charset=utf-8",
+                data: { category: category },
+                dataType: "json",
+                success: function (data) {
+                    console.log(data);
+                    $("#Product").val("");
+                    productsAutocomplete.destroy();
+                    productsAutocomplete = makeInputAutocomplete("Product", data);
+                },
+                error: function () { alert('Server failure!'); }
+            });
         }
     </script>
 }

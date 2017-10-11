@@ -6,6 +6,7 @@ using Cashed.DataAccess.Contract;
 using Cashed.DataAccess.Model;
 using System.Data.Entity;
 using System.Linq;
+using System;
 
 namespace Logic.Cashed.Logic
 {
@@ -50,6 +51,23 @@ namespace Logic.Cashed.Logic
                 Id = category.Id,
                 Name = category.Name
             };
+        }
+
+        public async Task<List<ProductModel>> GetProductsByCategoryName(string categoryName)
+        {
+            var category = await _unitOfWork.GetNamedModelQueryRepository<Category>().GetByName(categoryName);
+            if (category == null)
+                throw new ArgumentException($"Нет категории с именем \"{categoryName}\"");
+            var productsRepo = _unitOfWork.GetQueryRepository<Product>();
+            var products = await productsRepo.Query
+                .Where(x => x.CategoryId == category.Id)
+                .Select(x => new ProductModel
+                {
+                    Id = x.Id,
+                    Name = x.Name
+                })
+                .ToListAsync();
+            return products;
         }
     }
 }
