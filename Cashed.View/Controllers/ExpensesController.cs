@@ -17,13 +17,16 @@ namespace Cashed.View.Controllers
         private readonly IExpensesBillQueries _expensesBillQueries;
         private readonly ICategoriesQueries _categoriesQueries;
         private readonly IProductQueries _productQueries;
+        private readonly IExpensesBillCommands _expensesBillCommands;
 
         public ExpensesController(IExpensesBillQueries expensesBillQueries,
-            ICategoriesQueries categoriesQueries, IProductQueries productQueries)
+            ICategoriesQueries categoriesQueries, IProductQueries productQueries,
+            IExpensesBillCommands expensesBillCommands)
         {
             _expensesBillQueries = expensesBillQueries;
             _categoriesQueries = categoriesQueries;
             _productQueries = productQueries;
+            _expensesBillCommands = expensesBillCommands;
         }
 
         // GET: Expenses
@@ -42,17 +45,18 @@ namespace Cashed.View.Controllers
             });
         }
 
-        public async Task<ActionResult> Add(string datetime = null, string category = null)
+        public async Task<ActionResult> Add(string datetime = null, string category = null, bool noItems = false)
         {
-            return View(await CreateExpenseItemViewModel(datetime, category));
+            return View(await CreateExpenseItemViewModel(datetime, category, noItems));
         }
 
-        private async Task<ExpenseItemViewModel> CreateExpenseItemViewModel(string datetime, string category)
+        private async Task<ExpenseItemViewModel> CreateExpenseItemViewModel(string datetime, string category, bool noItems)
         {
             var model = new ExpenseItemViewModel
             {
                 DateTime = datetime ?? DateTime.Now.ToString("yyyy.MM.dd HH:00"),
-                Category = category
+                Category = category,
+                NoItems = noItems
             };
             model.AvailCategories = await GetAllCategoriesNames();
             return model;
@@ -154,6 +158,13 @@ namespace Cashed.View.Controllers
 
         public async Task<ActionResult> CommitBill()
         {
+            var bill = GetCurrentBill();
+            if (bill.Items.Count == 0)
+                return RedirectToAction("Add", new { noItems = true });
+
+            await _expensesBillCommands.Create(bill);
+            Session[CurrentBillSessionName] = null;
+
             return RedirectToAction("Index");
         }
     }

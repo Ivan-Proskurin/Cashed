@@ -5,6 +5,12 @@
 
 <h3 class="form-caption-bg">Новый счет</h3>
 @Html.ValidationSummary(true)
+@if (Model.NoItems)
+{
+    <div class="validation-summary-errors no-items-message">
+        Добавьте хотя бы одну покупку, чтобы создать чек!
+    </div>
+}
 <div class="container">
     <div class="row">
         <div class="col">
@@ -12,11 +18,11 @@
             {
                 <div class="container">
                     <div class="row">
-                        <div class="column-header-col col col-sm-9">
+                        <div class="column-header-col col col-sm-8">
                             <h5 class="form-caption">Ввод:</h5>
                         </div>
-                        <div class="col col-sm-3">
-                            <button type="submit" class="btn btn-primary btn-sm">Ввести еще</button>
+                        <div class="col col-sm-4">
+                            <button type="submit" class="btn btn-primary btn-sm">Добавить в чек</button>
                         </div>
                     </div>
                 </div>               

@@ -30,5 +30,7 @@ namespace Cashed.View.Models
         public string Comment { get; set; }
 
         public List<string> AvailCategories { get; set; }
+
+        public bool NoItems { get; set; }
     }
 }

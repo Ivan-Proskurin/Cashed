@@ -43,6 +43,7 @@
     <Compile Include="ICategoriesCommands.cs" />
     <Compile Include="ICategoriesQueries.cs" />
     <Compile Include="ICommonModelQueries.cs" />
+    <Compile Include="IExpensesBillCommands.cs" />
     <Compile Include="IExpensesBillQueries.cs" />
     <Compile Include="IGenericModelCommands.cs" />
     <Compile Include="IProductQueries.cs" />

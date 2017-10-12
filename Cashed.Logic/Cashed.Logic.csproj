@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="CategoriesCommands.cs" />
     <Compile Include="CategoriesQueries.cs" />
+    <Compile Include="ExpensesBillCommands.cs" />
     <Compile Include="ExpensesBillQueries.cs" />
     <Compile Include="ProductQueries.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

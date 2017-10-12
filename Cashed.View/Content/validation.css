@@ -24,3 +24,9 @@
 .validation-summary-valid {
     display: none;
 }
+
+.no-items-message {
+    margin-top: 0;
+    margin-bottom: 35px;
+    text-align: center;
+}
