@@ -245,9 +245,10 @@
     </Compile>
     <Compile Include="Models\AddCategoryViewModel.cs" />
     <Compile Include="Models\EditCategoryViewModel.cs" />
+    <Compile Include="Models\ExpenseBillViewModel.cs" />
     <Compile Include="Models\ExpensesBillListViewModel.cs" />
     <Compile Include="Models\ExpensesBillsViewList.cs" />
-    <Compile Include="Models\ExpensesBillViewModel.cs" />
+    <Compile Include="Models\ExpenseItemViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -274,6 +275,7 @@
     <Content Include="Views\Category\Edit.cshtml" />
     <Content Include="Views\Expenses\Add.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Expenses\GetSubtotal.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

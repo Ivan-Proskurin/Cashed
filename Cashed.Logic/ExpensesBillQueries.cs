@@ -19,12 +19,12 @@ namespace Logic.Cashed.Logic
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<List<ExpensesBillModel>> GetAll()
+        public async Task<List<ExpenseBillModel>> GetAll()
         {
             // отбираем нужные счета
             var expenseRepo = _unitOfWork.GetQueryRepository<ExpenseBill>();
             var bills = await expenseRepo.Query
-                .Select(x => new ExpensesBillModel
+                .Select(x => new ExpenseBillModel
                 {
                     Id = x.Id,
                     Cost = x.SumPrice,
@@ -51,12 +51,12 @@ namespace Logic.Cashed.Logic
                 .OrderByDescending(x => x.Total).ToListAsync();
 
             var categoriesRepo = _unitOfWork.GetQueryRepository<Category>();
-            var models = new List<ExpensesBillModel>();
+            var models = new List<ExpenseBillModel>();
             foreach (var billCategory in groupByCategory)
             {
                 var category = await categoriesRepo.GetById(billCategory.CategoryId);
 
-                var bill = new ExpensesBillModel()
+                var bill = new ExpenseBillModel()
                 {
                     Id = billCategory.BillId,
                     DateTime = bills.First(x => x.Id == billCategory.BillId).DateTime,
@@ -69,12 +69,12 @@ namespace Logic.Cashed.Logic
             return models.OrderByDescending(x => x.DateTime).ThenByDescending(x => x.Cost).ToList();
         }
 
-        public Task<ExpensesBillModel> GetById(int id)
+        public Task<ExpenseBillModel> GetById(int id)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task<ExpensesBillModel> GetByName(string name)
+        public Task<ExpenseBillModel> GetByName(string name)
         {
             throw new System.NotImplementedException();
         }

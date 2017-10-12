@@ -57,7 +57,8 @@ namespace Logic.Cashed.Logic
         {
             var category = await _unitOfWork.GetNamedModelQueryRepository<Category>().GetByName(categoryName);
             if (category == null)
-                throw new ArgumentException($"Нет категории с именем \"{categoryName}\"");
+                throw new ArgumentException($"Нет категории с названием \"{categoryName}\"");
+
             var productsRepo = _unitOfWork.GetQueryRepository<Product>();
             var products = await productsRepo.Query
                 .Where(x => x.CategoryId == category.Id)

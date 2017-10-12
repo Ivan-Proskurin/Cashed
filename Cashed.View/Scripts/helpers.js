@@ -23,6 +23,10 @@ function makeInputAutocomplete(inputId, list, onSelect) {
     var cmb = $("div.awesomplete");
     cmb.addClass("col-md-9");
 
+    var container = input.parentElement;
+    var validation = $("span[data-valmsg-for=" + inputId + "]");
+    validation.appendTo(container);
+
     input.addEventListener("click", function () {
         if (comboplete.ul.childNodes.length === 0) {
             comboplete.minChars = 0;

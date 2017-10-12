@@ -2,7 +2,7 @@
 
 namespace Logic.Cashed.Contract
 {
-    public interface IExpensesBillQueries : ICommonModelQueries<ExpensesBillModel>
+    public interface IExpensesBillQueries : ICommonModelQueries<ExpenseBillModel>
     {
     }
 }

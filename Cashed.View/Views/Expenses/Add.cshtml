@@ -1,9 +1,10 @@
-﻿@model Cashed.View.Models.ExpensesBillViewModel
+﻿@model Cashed.View.Models.ExpenseItemViewModel
 @{
     ViewBag.Title = "Новый счет";
 }
 
 <h3 class="form-caption-bg">Новый счет</h3>
+@Html.ValidationSummary(true)
 <div class="container">
     <div class="row">
         <div class="col">
@@ -20,18 +21,26 @@
                     </div>
                 </div>               
                 <div class="form-group row">
-                    <label class="col-form-label col-md-3" for="datepicker">Дата/время</label>
+                    <label class="col-form-label col-md-3" for="datepicker">Дата/время*</label>
                     <div id='datepicker' class='input-group date col-md-9' >
-                        <input id="datepicker-input" type='text' class="form-control" 
-                               value="@Model.DateTime"/>
+                        @Html.TextBoxFor(m => m.DateTime, new { @class = "form-control" })
                         <span class="input-group-addon" id="date-picker-button">
                             <i class="fa fa-calendar"></i>
                         </span>
                     </div>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-3"></div>
+                            <div class="col-md-9">
+                                @Html.ValidationMessageFor(m => m.DateTime)
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group row">
-                    <label for="Category" class="col-form-label col-md-3">Категория</label>
-                    <input id="Category" type="text" class="form-control" list="categoryList"/>
+                    <label for="Category" class="col-form-label col-md-3">Категория*</label>
+                    @Html.TextBoxFor(m => m.Category, new { @class = "form-control", list = "categoryList" })
+                    @Html.ValidationMessageFor(m => m.Category)
                     <datalist id="categoryList">
                         @foreach (var category in Model.AvailCategories)
                         {
@@ -40,23 +49,25 @@
                     </datalist>
                 </div>
                 <div class="form-group row">
-                    <label for="Product" class="col-form-label col-md-3">Продукт</label>
-                    <input id="Product" type="text" class="form-control"/>
+                    <label for="Product" class="col-form-label col-md-3">Продукт*</label>
+                    @Html.TextBoxFor(m => m.Product, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Product)
                 </div>
                 <div class="form-group row">
-                    <label for="Price" class="col-form-label col-md-3">Цена</label>
+                    <label for="Price" class="col-form-label col-md-3">Сумма*</label>
                     <div class="col-md-3">
-                        <input id="Price" type="text" class="form-control" />
+                        @Html.TextBoxFor(m => m.Price, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Price)
                     </div>
                     <label for="Quantity" class="col-form-label col-md-3">Количество</label>
                     <div class="col-md-3">
-                        <input id="Quantity" type="text" class="form-control" />
+                        @Html.TextBoxFor(m => m.Quantity, new { @class = "form-control" })
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="Comment" class="col-form-label col-md-3">Комментарий</label>
                     <div class="col-md-9">
-                        <input id="Comment" type="text" class="form-control" />
+                        @Html.TextBoxFor(m => m.Comment, new { @class = "form-control" })
                     </div>
                 </div>
             }
@@ -68,57 +79,12 @@
                         <h5 class="form-caption">Итог:</h5>
                     </div>
                     <div class="col col-sm-3">
-                        <button class="btn btn-danger btn-sm">Подтвердить</button>
+                        @Html.ActionLink("Подтвердить", "CommitBill", null, new { @class = "btn btn-danger btn-sm" })
+                        @*<button class="btn btn-danger btn-sm">Подтвердить</button>*@
                     </div>
                 </div>
             </div>
-
-            <div class="container">
-                <div class="row expenses-totals">
-                    <div class="column-header-col col col-sm-5">
-                        <span class="expenses-subtotals">Промежуточный итог:</span>
-                    </div>
-                    <div class="subtotals-placeholder col col-sm-4">
-                        <span>за 2017.10.09</span>
-                    </div>
-                    <div class="expenses-subtotals expenses-sum col col-sm-3">
-                        <span>4346,67</span>
-                    </div>
-                </div>
-                <div class="row expenses-subtotals-row">
-                    <div class="expenses-subtotals col col-sm-5">
-                        <span>#1 Мясо по корейски</span>
-                    </div>
-                    <div class="expenses-subtotals col col-sm-4">
-                        <span>Продукты питания</span>
-                    </div>
-                    <div class="expenses-subtotals expenses-sum col col-sm-3">
-                        <span>569,45</span>
-                    </div>
-                </div>
-                <div class="row expenses-subtotals-row">
-                    <div class="expenses-subtotals col col-sm-5">
-                        <span>#2 Рыба вяленая</span>
-                    </div>
-                    <div class="expenses-subtotals col col-sm-4">
-                        <span>Продукты питания</span>
-                    </div>
-                    <div class="expenses-subtotals col expenses-sum col-sm-3">
-                        <span>235,40</span>
-                    </div>
-                </div>
-                <div class="row expenses-subtotals-row">
-                    <div class="expenses-subtotals col col-sm-5">
-                        <span>#3 Телевизор плазменный</span>
-                    </div>
-                    <div class="expenses-subtotals col col-sm-4">
-                        <span>Бытовая техника</span>
-                    </div>
-                    <div class="expenses-subtotals col expenses-sum col-sm-3">
-                        <span>76500</span>
-                    </div>
-                </div>
-            </div>
+            @Html.Action("GetSubtotal")
         </div>
     </div>
 </div>
@@ -137,7 +103,7 @@
         });
 
         function propagateDateTimeToPicker(dt) {
-            $("#datepicker-input").val(formatDateTime(dt));
+            $("#DateTime").val(formatDateTime(dt));
         }
 
         function formatDateTime(dt) {
@@ -160,6 +126,8 @@
         makeInputNumeric("Price");
         makeInputNumeric("Quantity");
 
+        var product = "@Model.Product";
+
         function updateProducts(category) {
             $.ajax({
                 type: "GET",
@@ -168,14 +136,19 @@
                 data: { category: category },
                 dataType: "json",
                 success: function (data) {
-                    console.log(data);
-                    $("#Product").val("");
+                    if (product.Length == 0)
+                        $("#Product").val("");
                     productsAutocomplete.destroy();
                     productsAutocomplete = makeInputAutocomplete("Product", data);
                 },
                 error: function () { alert('Server failure!'); }
-            });
-        }
+                });
+            }
+
+            var categoryVal = $("#Category").val();
+            if (categoryVal.length > 0) {
+                updateProducts(categoryVal)
+            }
     </script>
 }
 
