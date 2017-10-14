@@ -43,30 +43,33 @@ namespace Logic.Cashed.Logic
             await _unitOfWork.Commit();
         }
 
-        public async Task Update(CategoryModel model)
+        public async Task<CategoryModel> Update(CategoryModel model)
         {
             var categoryRespoitory = _unitOfWork.GetCommandRepository<Category>();
+            var category = new Category
+            {
+                Id = model.Id,
+                Name = model.Name
+            };
+            var categoriesQueries = _unitOfWork.GetNamedModelQueryRepository<Category>();
+            var other = await categoriesQueries.GetByName(model.Name);
+            if (other != null && other.Id != category.Id)
+                throw new ArgumentException("Категория с таким именем уже существует");
+
             if (model.Id > 0)
             {
-                _unitOfWork.UpdateModel(new Category
-                {
-                    Id = model.Id,
-                    Name = model.Name
-                });
+                _unitOfWork.UpdateModel(category);
             }
             else
             {
-                var categoriesQueries = _unitOfWork.GetNamedModelQueryRepository<Category>();
-                if (await categoriesQueries.GetByName(model.Name) != null)
-                    throw new ArgumentException("Категория с таким именем уже существует");
-                categoryRespoitory.Create(
-                    new Category
-                    {
-                        Id = -1,
-                        Name = model.Name
-                    });
+                categoryRespoitory.Create(category);
             }
             await _unitOfWork.Commit();
+            return new CategoryModel
+            {
+                Id = category.Id,
+                Name = category.Name
+            };
         }
     }
 }

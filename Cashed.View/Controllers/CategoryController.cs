@@ -27,33 +27,25 @@ namespace Cashed.View.Controllers
             return View(cats);
         }
 
-        public ActionResult Add()
+        public async Task<JsonResult> AddCategory(string categoryName)
         {
-            return View(new AddCategoryViewModel());
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> Add(AddCategoryViewModel model)
-        {
-            if (ModelState.IsValid)
+            try
             {
-                try
+                var category = await _categoriesQueries.GetByName(categoryName);
+                if (category != null)
+                    throw new ArgumentException($"Категория с названием \"{categoryName}\" уже есть");
+                var model = new CategoryModel
                 {
-                    await _categoriesCommands.Update(new CategoryModel
-                    {
-                        Id = -1,
-                        Name = model.Name
-                    });
-                    return RedirectToAction("Index");
-                }
-                catch (ArgumentException exc)
-                {
-                    ModelState.AddModelError(string.Empty, exc.Message);
-                    return View(model);
-                }
+                    Id = -1,
+                    Name = categoryName
+                };
+                model = await _categoriesCommands.Update(model);
+                return Json(new { Model = model, Status = true }, JsonRequestBehavior.AllowGet);
             }
-            else
-                return View(model);
+            catch (ArgumentException ex)
+            {
+                return Json(new { Status = false, Message = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
         }
 
         public async Task<JsonResult> Delete(string idList, bool onlyMark = true)
@@ -75,10 +67,10 @@ namespace Cashed.View.Controllers
             return Json(deletedIds.ToArray(), JsonRequestBehavior.AllowGet);
         }
 
-        private async void DeleteCategory(int id)
-        {
-            await _categoriesCommands.Delete(id);
-        }
+        //private async void DeleteCategory(int id)
+        //{
+        //    await _categoriesCommands.Delete(id);
+        //}
 
         public async Task<ActionResult> Edit(int id)
         {

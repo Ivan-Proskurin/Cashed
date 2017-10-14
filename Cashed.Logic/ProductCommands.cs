@@ -16,7 +16,7 @@ namespace Logic.Cashed.Logic
             _unitOfWork = unitOfWork;
         }
 
-        public Task Update(ProductModel model)
+        public Task<ProductModel> Update(ProductModel model)
         {
             throw new System.NotImplementedException();
         }

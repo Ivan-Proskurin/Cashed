@@ -23,7 +23,7 @@
             </th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="cat-table-body">
         @for (int i = 0; i < Model.Count; i++)
         {
             <tr data-id="@Model[i].Id">
@@ -38,8 +38,28 @@
         }
     </tbody>
 </table>
-@Html.ActionLink("Добавить", "Add", "Category", null, 
-    new { id = "categoriesLink", @class = "btn btn-outline-primary btn-sm" })
+
+<div id="enter-cat-name" class="validation-summary-errors validation-string no-items-message" hidden="hidden">
+    Введите название категории!
+</div>
+
+<div id="cat-exists" class="validation-summary-errors validation-string no-items-message" hidden="hidden">
+    Такая категория уже есть!
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="form-group row">
+            <label class="col-form-label col-md-4" for="Category">Название категории</label>
+            <div class="col-md-6">
+                <input id="Category" type="text" class="form-control"/>
+            </div>
+            <div class="col-md-2">
+                <button id="add-cat-btn" class="btn btn-primary">Добавить</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Modal -->
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -141,6 +161,55 @@
             }
             categoryCheckboxChanged();
         }
+
+        function addCategoryToTable(table, model) {
+            hideCheckboxes();
+            $('<tr>').addClass("data-row")
+                .attr("data-id", model.Id)
+                .append($("<td>").addClass("checkbox-cell").attr("hidden", "hidden")
+                    .append($("<input>").attr("type", "checkbox").addClass("product-checkbox")
+                        .attr("data-id", model.Id).change(categoryCheckboxChanged)))
+                .append($('<td>').html(
+                    model.Id
+                ))
+                .append($('<td>').html(
+                    model.Name
+                ))
+                .appendTo(table);
+        }
+
+        $("#add-cat-btn").click(function() {
+            var catName = $("#Category").val();
+            if (!catName) {
+                $("#enter-cat-name").removeAttr("hidden");
+            } else {
+                $("#enter-cat-name").attr("hidden", "hidden");
+                addCategory(catName);
+            }
+        });
+
+        function addCategory(catName) {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("AddCategory", "Category")',
+                contentType: "application/json; charset=utf-8",
+                data: { categoryName: catName },
+                dataType: "json",
+                success: function(data) {
+                    if (data.Status) {
+                        $("#cat-exists").attr("hidden", "hidden");
+                        addCategoryToTable($("#cat-table-body"), data.Model);
+                        $("#Category").val("");
+                        //updateShowcheboxesVisibility();
+                    } else {
+                        $("#cat-exists").removeAttr("hidden");
+                        $("#cat-exists").html(data.Message);
+                    }
+                },
+                error: function() { alert('Server failure!'); }
+            });
+        }
+
     </script>
 
 }

@@ -21,7 +21,7 @@ namespace Logic.Cashed.Logic
             throw new NotImplementedException();
         }
 
-        public Task Update(ExpenseBillModel model)
+        public Task<ExpenseBillModel> Update(ExpenseBillModel model)
         {
             throw new NotImplementedException();
         }
