@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using Cashed.View.Models;
 using Logic.Cashed.Contract;
 using Logic.Cashed.Contract.Models;
 using Newtonsoft.Json;
+using static System.String;
 
 namespace Cashed.View.Controllers
 {
@@ -23,11 +25,13 @@ namespace Cashed.View.Controllers
             _productCommands = productCommands;
         }
 
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string categoryName = null)
         {
+            var categories = await _categoriesQueries.GetAll();
             var viewModel = new ProductListViewModel
             {
-                Categories = await _categoriesQueries.GetAll()
+                CategoryName = categoryName ?? categories.FirstOrDefault()?.Name,
+                Categories = categories
             };
             return View(viewModel);
         }
@@ -64,6 +68,60 @@ namespace Cashed.View.Controllers
             var ids = JsonConvert.DeserializeObject<int[]>(idList);
             var deletedIds = await _productCommands.GroupDeletion(ids, onlyMark);
             return Json(deletedIds.ToArray(), JsonRequestBehavior.AllowGet);
+        }
+
+        public async Task<ActionResult> Edit(int id)
+        {
+            var model = await _productQueries.GetById(id);
+            var category = await _categoriesQueries.GetById(model.CategoryId);
+            var categories = await _categoriesQueries.GetAll();
+            return View(new EditProductViewModel
+            {
+                Id = model.Id,
+                Name = model.Name,
+                CategoryId = model.CategoryId,
+                CategoryName = category.Name,
+                Categories = categories
+            });
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Edit(EditProductViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var category = await _categoriesQueries.GetByName(model.CategoryName);
+                    if (category == null)
+                        throw new ArgumentException($"Нет категории с названием \"{model.CategoryName}\"");
+
+                    if (category.Id != model.CategoryId)
+                    {
+                        var products = await _productQueries.GetCategoryProducts(category.Id);
+                        if (products.FirstOrDefault(
+                                x => string.Equals(x.Name, model.Name, StringComparison.CurrentCultureIgnoreCase)) !=
+                            null)
+                        {
+                            throw new ArgumentException($"В выбранной категории уже есть продукт с названием \"{model.Name}\"");
+                        }
+                    }
+
+                    await _productCommands.Update(new ProductModel
+                    {
+                        Id = model.Id,
+                        Name = model.Name,
+                        CategoryId = category.Id
+                    });
+                    return RedirectToAction("Index", new { categoryName = category.Name });
+                }
+                catch (ArgumentException exc)
+                {
+                    ModelState.AddModelError(Empty, exc.Message);
+                }
+            }
+            model.Categories = await _categoriesQueries.GetAll();
+            return View(model);
         }
     }
 }

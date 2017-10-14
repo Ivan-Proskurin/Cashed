@@ -104,7 +104,7 @@
     <script type="text/javascript">
         activateLink("#productsLink");
 
-        makeInputAutocomplete("Category", null, categorySelected, "col-md-7");
+        makeInputAutocomplete("Category", null, categorySelected, "col-md-7 awesomplete-padding-fix");
 
         function categorySelected() {
             $("#select-cat-msg").attr("hidden", "hidden");
@@ -141,9 +141,8 @@
                 .append($('<td>').html(
                     product.Id
                 ))
-                .append($('<td>').html(
-                    product.Name
-                ))
+                .append($('<td>')
+                    .append($("<a>").attr("href", "/Products/Edit?id=" + product.Id).addClass("edit-item-link").html(product.Name)))
                 .appendTo(table);
         }
 
@@ -267,6 +266,12 @@
             }
             productsCheckboxChanged();
             updateShowcheboxesVisibility();
+        }
+
+        var initialCategory = "@Model.CategoryName";
+        if (initialCategory) {
+            $("#Category").val(initialCategory);
+            categorySelected();
         }
 
     </script>

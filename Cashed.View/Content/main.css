@@ -65,3 +65,17 @@ a.edit-item-link {
 .expenses-subtotals-row {
     margin-top: 3px;
 }
+
+.awesomplete-padding-fix {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.zero-paddings {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.bottom-buttons-row {
+    margin-top: 30px;
+}

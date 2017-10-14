@@ -33,3 +33,9 @@
     margin-top: 0;
     margin-bottom: 35px;
 }
+
+.validation-message-in-container {
+    margin-top: -14px;
+    margin-left: -10px;
+    margin-bottom: 15px;
+}

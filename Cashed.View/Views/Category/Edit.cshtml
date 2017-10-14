@@ -7,6 +7,7 @@
 <br />
 @using (Html.BeginForm())
 {
+    @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
     <div class="form-group row">
         @Html.LabelFor(m => m.Id, null, new { @class = "col-form-label col-md-3" })
@@ -16,7 +17,7 @@
         @Html.LabelFor(m => m.Name, null, new { @class = "col-form-label col-md-3" })
         @Html.TextBoxFor(m => m.Name, null, new { @class = "form-control col-md-9" })
     </div>
-    <div class="container">
+    <div class="container validation-message-in-container">
         <div class="row">
             <div class="col-md-3"></div>
             <div class="col-md-9">

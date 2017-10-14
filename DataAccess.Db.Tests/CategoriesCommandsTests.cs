@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Threading.Tasks;
+using Logic.Cashed.Contract;
 
 namespace Cashed.DataAccess.Db.Tests
 {
@@ -14,6 +15,8 @@ namespace Cashed.DataAccess.Db.Tests
     {
         private readonly Mock<INamedModelQueryRepository<Category>> _queriesMock;
         private readonly Mock<ICommandRepository<Category>> _commandsMock;
+        private readonly Mock<IProductQueries> _productQueriesMock;
+        private readonly Mock<IProductCommands> _productCommandsMock;
         private readonly Mock<IUnitOfWork> _uowMock;
 
         public CategoriesCommandsTests()
@@ -22,6 +25,8 @@ namespace Cashed.DataAccess.Db.Tests
             _queriesMock.Setup(m => m.GetByName(It.IsAny<string>())).Returns<Category>(null);
             _commandsMock = new Mock<ICommandRepository<Category>>();
             _commandsMock.Setup(m => m.Create(It.IsAny<Category>()));
+            _productQueriesMock = new Mock<IProductQueries>();
+            _productCommandsMock = new Mock<IProductCommands>();
             _uowMock = new Mock<IUnitOfWork>();
             _uowMock.Setup(m => m.GetQueryRepository<Category>()).Returns(_queriesMock.Object);
             _uowMock.Setup(m => m.GetCommandRepository<Category>()).Returns(_commandsMock.Object);
@@ -32,7 +37,8 @@ namespace Cashed.DataAccess.Db.Tests
         public void UpdateWithUniqueName_UpdatesNormal()
         {
 
-            var categoriesCommands = new CategoriesCommands(_uowMock.Object);
+            var categoriesCommands = new CategoriesCommands(
+                _uowMock.Object, _productCommandsMock.Object, _productQueriesMock.Object);
             var model = new CategoryModel { Id = -1, Name = "New category" };
             var t = categoriesCommands.Update(model);
             t.Wait();
@@ -48,7 +54,8 @@ namespace Cashed.DataAccess.Db.Tests
             _queriesMock.Setup(m => m.GetByName(It.IsAny<string>())).Returns<string>(
                 s => Task.FromResult<Category>(new Category()));
 
-            var categoriesCommands = new CategoriesCommands(_uowMock.Object);
+            var categoriesCommands = new CategoriesCommands(
+                _uowMock.Object, _productCommandsMock.Object, _productQueriesMock.Object);
             var model = new CategoryModel { Id = -1, Name = "New category" };
             try
             {

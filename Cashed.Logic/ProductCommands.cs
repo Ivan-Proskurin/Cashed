@@ -16,9 +16,15 @@ namespace Logic.Cashed.Logic
             _unitOfWork = unitOfWork;
         }
 
-        public Task<ProductModel> Update(ProductModel model)
+        public async Task<ProductModel> Update(ProductModel model)
         {
-            throw new System.NotImplementedException();
+            var queries = _unitOfWork.GetQueryRepository<Product>();
+            var product = await queries.GetById(model.Id);
+            product.Name = model.Name;
+            product.CategoryId = model.CategoryId;
+            _unitOfWork.UpdateModel(product);
+            await _unitOfWork.Commit();
+            return model;
         }
 
         public Task Delete(int id, bool onlyMark = true)

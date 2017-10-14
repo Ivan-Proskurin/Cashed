@@ -25,9 +25,18 @@ namespace Logic.Cashed.Logic
             throw new NotImplementedException();
         }
 
-        public Task<ProductModel> GetById(int id)
+        public async Task<ProductModel> GetById(int id)
         {
-            throw new NotImplementedException();
+            var prodRepo = _unitOfWork.GetQueryRepository<Product>();
+            var product = await prodRepo.GetById(id);
+            if (product == null)
+                throw new ArgumentException($"Нет продукта с идентификатором {id}");
+            return new ProductModel
+            {
+                Id = product.Id,
+                CategoryId = product.CategoryId,
+                Name = product.Name
+            };
         }
 
         public async Task<ProductModel> GetByName(string name, bool includeDeleted = false)
