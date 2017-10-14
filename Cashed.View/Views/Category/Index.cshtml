@@ -6,6 +6,9 @@
 
 <button class="showcheckboxes btn btn-outline-secondary btn-sm">Выбрать</button>
 <button class="hidecheckboxes btn btn-outline-secondary btn-sm" hidden>Убрать выделение</button>
+<button type="button" class="delete-button btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#deleteModal" hidden>
+    Удалить
+</button>
 <table class="table table-striped table-hover">
     <thead>
         <tr>
@@ -37,19 +40,41 @@
 </table>
 @Html.ActionLink("Добавить", "Add", "Category", null, 
     new { id = "categoriesLink", @class = "btn btn-outline-primary btn-sm" })
-<button class="delete-button btn btn-outline-danger btn-sm" hidden>Удалить</button>
+
+<!-- Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Удаление категорий</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Удалить помеченные категорией с сохранением операций по ним и их продуктов?
+                Или удалить их полностью. Тогда продукты и операции будут удалены также.
+            </div>
+            <div class="modal-footer">
+                <button id="deleteOnlyMarkButton" type="button" class="btn btn-primary" data-dismiss="modal">Удалить с сохранением</button>
+                <button id="deleteFullButton" type="button" class="btn btn-danger" data-dismiss="modal">Удалить полностью</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts
 {
     <script type="text/javascript">
-        $(document).ready(function () {
+        $(document).ready(function() {
             activateLink("#categoriesLink");
 
             $(".showcheckboxes").click(showCheckboxes);
             $(".hidecheckboxes").click(hideCheckboxes);
             $(".toggle-all-chechboxes").change(toggleAllCheckboxes);
             $(".category-checkbox").change(categoryCheckboxChanged);
-            $(".delete-button").click(deleteCategories);
+            $("#deleteOnlyMarkButton").click(function() { deleteCategories(true); });
+            $("#deleteFullButton").click(function() { deleteCategories(false); });
         });
 
         function showCheckboxes() {
@@ -82,23 +107,23 @@
                 $(".delete-button").attr("hidden", "hidden");
         }
 
-        function deleteCategories() {
+        function deleteCategories(onlyMark) {
             $.ajax({
                 type: "GET",
                 url: '@Url.Action("Delete", "Category")',
                 contentType: "application/json; charset=utf-8",
-                data: { idList: JSON.stringify(getDeleteIdList()) },
+                data: { idList: JSON.stringify(getDeleteIdList()), onlyMark: onlyMark },
                 dataType: "json",
-                success: function (data) {
+                success: function(data) {
                     deleteRows(data);
                 },
-                error: function () { alert('Failure'); }
+                error: function() { alert('Failure'); }
             });
         }
 
         function getDeleteIdList() {
             var chk = $(".category-checkbox:checked");
-            var ids = chk.map(function (index, item) {
+            var ids = chk.map(function(index, item) {
                 return +$(item).attr("data-id");
             });
             var idList = [];

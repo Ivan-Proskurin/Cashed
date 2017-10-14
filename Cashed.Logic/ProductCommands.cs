@@ -21,7 +21,7 @@ namespace Logic.Cashed.Logic
             throw new System.NotImplementedException();
         }
 
-        public Task Delete(int id)
+        public Task Delete(int id, bool onlyMark = true)
         {
             throw new System.NotImplementedException();
         }
@@ -45,7 +45,7 @@ namespace Logic.Cashed.Logic
             };
         }
 
-        public async Task<List<int>> GroupDeletion(int[] ids)
+        public async Task<List<int>> GroupDeletion(int[] ids, bool onlyMark = true)
         {
             var deletedList = new List<int>();
             var queries = _unitOfWork.GetQueryRepository<Product>();
@@ -54,7 +54,16 @@ namespace Logic.Cashed.Logic
             {
                 var model = await queries.GetById(id);
                 if (model == null) continue;
-                commands.Delete(model);
+                if (onlyMark)
+                {
+                    model.IsDeleted = true;
+                    _unitOfWork.UpdateModel(model);
+                }
+                else
+                {
+                    // todo: удалить все операции по продукту
+                    commands.Delete(model);
+                }
                 deletedList.Add(id);
             }
             await _unitOfWork.Commit();

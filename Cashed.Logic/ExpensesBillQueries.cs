@@ -19,7 +19,7 @@ namespace Logic.Cashed.Logic
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<List<ExpenseBillModel>> GetAll()
+        public async Task<List<ExpenseBillModel>> GetAll(bool includeDeleted = false)
         {
             // отбираем нужные счета
             var expenseRepo = _unitOfWork.GetQueryRepository<ExpenseBill>();
@@ -74,7 +74,7 @@ namespace Logic.Cashed.Logic
             throw new System.NotImplementedException();
         }
 
-        public Task<ExpenseBillModel> GetByName(string name)
+        public Task<ExpenseBillModel> GetByName(string name, bool includeDeleted = false)
         {
             throw new System.NotImplementedException();
         }

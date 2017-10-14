@@ -13,5 +13,6 @@ namespace Cashed.DataAccess.Model
         public string Name { get; set; }
         [ForeignKey("CategoryId")]
         public Category Category { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

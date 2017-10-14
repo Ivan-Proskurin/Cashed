@@ -19,15 +19,17 @@ namespace Logic.Cashed.Logic
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<List<CategoryModel>> GetAll()
+        public async Task<List<CategoryModel>> GetAll(bool includeDeleted = false)
         {
             var repo = _unitOfWork.GetQueryRepository<Category>();
-            return await repo.Query.Select(x => new CategoryModel
-            {
-                Id = x.Id,
-                Name = x.Name
-            }
-            ).ToListAsync();
+            var query = includeDeleted ? repo.Query : repo.Query.Where(x => !x.IsDeleted);
+            return await query
+                .Select(x => new CategoryModel
+                {
+                    Id = x.Id,
+                    Name = x.Name
+                }
+                ).ToListAsync();
         }
 
         public async Task<CategoryModel> GetById(int id)
@@ -42,10 +44,10 @@ namespace Logic.Cashed.Logic
             ).FirstOrDefaultAsync();
         }
 
-        public async Task<CategoryModel> GetByName(string name)
+        public async Task<CategoryModel> GetByName(string name, bool includeDeleted = false)
         {
             var category = await _unitOfWork.GetNamedModelQueryRepository<Category>().GetByName(name);
-            if (category == null) return null;
+            if (category == null || category.IsDeleted && !includeDeleted) return null;
             return new CategoryModel
             {
                 Id = category.Id,
@@ -53,14 +55,15 @@ namespace Logic.Cashed.Logic
             };
         }
 
-        public async Task<List<ProductModel>> GetProductsByCategoryName(string categoryName)
+        public async Task<List<ProductModel>> GetProductsByCategoryName(string categoryName, bool includeDeleted = false)
         {
             var category = await _unitOfWork.GetNamedModelQueryRepository<Category>().GetByName(categoryName);
             if (category == null)
                 throw new ArgumentException($"Нет категории с названием \"{categoryName}\"");
 
             var productsRepo = _unitOfWork.GetQueryRepository<Product>();
-            var products = await productsRepo.Query
+            var query = includeDeleted ? productsRepo.Query : productsRepo.Query.Where(x => !x.IsDeleted);
+            var products = await query
                 .Where(x => x.CategoryId == category.Id)
                 .Select(x => new ProductModel
                 {

@@ -59,10 +59,10 @@ namespace Cashed.View.Controllers
             }
         }
 
-        public async Task<JsonResult> Delete(string idList)
+        public async Task<JsonResult> Delete(string idList, bool onlyMark = true)
         {
             var ids = JsonConvert.DeserializeObject<int[]>(idList);
-            var deletedIds = await _productCommands.GroupDeletion(ids);
+            var deletedIds = await _productCommands.GroupDeletion(ids, onlyMark);
             return Json(deletedIds.ToArray(), JsonRequestBehavior.AllowGet);
         }
     }

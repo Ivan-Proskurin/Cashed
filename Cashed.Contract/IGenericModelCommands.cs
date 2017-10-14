@@ -5,6 +5,6 @@ namespace Logic.Cashed.Contract
     public interface IGenericModelCommands<T> where T : class
     {
         Task Update(T model);
-        Task Delete(int id);
+        Task Delete(int id, bool onlyMark = true);
     }
 }

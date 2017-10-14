@@ -3,6 +3,7 @@ using Cashed.DataAccess.Model;
 using Logic.Cashed.Contract;
 using Logic.Cashed.Contract.Models;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Logic.Cashed.Logic
@@ -10,20 +11,35 @@ namespace Logic.Cashed.Logic
     public class CategoriesCommands : ICategoriesCommands
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IProductCommands _productCommands;
+        private readonly IProductQueries _productQueries;
 
-        public CategoriesCommands(IUnitOfWork unitOfWork)
+        public CategoriesCommands(IUnitOfWork unitOfWork, IProductCommands productCommands, IProductQueries productQueries)
         {
             _unitOfWork = unitOfWork;
+            _productCommands = productCommands;
+            _productQueries = productQueries;
         }
 
-        public async Task Delete(int id)
+        public async Task Delete(int id, bool onlyMark = true)
         {
             var categoriesCommands = _unitOfWork.GetCommandRepository<Category>();
             var categoriesQueries = _unitOfWork.GetQueryRepository<Category>();
             var category = await categoriesQueries.GetById(id);
             if (category == null)
                 throw new ArgumentException($"Нет категории с идентификатором {id}");
-            categoriesCommands.Delete(category);
+            var products = await _productQueries.GetCategoryProducts(category.Id, true);
+            if (onlyMark)
+            {
+                await _productCommands.GroupDeletion(products.Select(x => x.Id).ToArray());
+                category.IsDeleted = true;
+                _unitOfWork.UpdateModel(category);
+            }
+            else
+            {
+                await _productCommands.GroupDeletion(products.Select(x => x.Id).ToArray(), false);
+                categoriesCommands.Delete(category);
+            }
             await _unitOfWork.Commit();
         }
 

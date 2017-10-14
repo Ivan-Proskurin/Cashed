@@ -6,6 +6,6 @@ namespace Logic.Cashed.Contract
 {
     public interface ICategoriesQueries : ICommonModelQueries<CategoryModel>
     {
-        Task<List<ProductModel>> GetProductsByCategoryName(string categoryName);
+        Task<List<ProductModel>> GetProductsByCategoryName(string categoryName, bool includeDeleted = false);
     }
 }

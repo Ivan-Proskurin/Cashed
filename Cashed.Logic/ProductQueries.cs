@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Logic.Cashed.Contract.Models;
 using Cashed.DataAccess.Contract;
@@ -19,7 +20,7 @@ namespace Logic.Cashed.Logic
             _unitOfWork = unitOfWork;
         }
 
-        public Task<List<ProductModel>> GetAll()
+        public Task<List<ProductModel>> GetAll(bool includeDeleted = false)
         {
             throw new NotImplementedException();
         }
@@ -29,11 +30,11 @@ namespace Logic.Cashed.Logic
             throw new NotImplementedException();
         }
 
-        public async Task<ProductModel> GetByName(string name)
+        public async Task<ProductModel> GetByName(string name, bool includeDeleted = false)
         {
             var productRepo = _unitOfWork.GetNamedModelQueryRepository<Product>();
             var product = await productRepo.GetByName(name);
-            if (product == null) return null;
+            if (product == null || product.IsDeleted && !includeDeleted) return null;
             return new ProductModel
             {
                 Id = product.Id,
@@ -42,10 +43,11 @@ namespace Logic.Cashed.Logic
             };
         }
 
-        public async Task<List<ProductModel>> GetCategoryProducts(int categoryId)
+        public async Task<List<ProductModel>> GetCategoryProducts(int categoryId, bool includeDeleted = false)
         {
             var productRepo = _unitOfWork.GetQueryRepository<Product>();
-            return await productRepo.Query
+            var query = includeDeleted ? productRepo.Query : productRepo.Query.Where(x => !x.IsDeleted);
+            return await query
                 .Where(x => x.CategoryId == categoryId)
                 .Select(x => new ProductModel
                 {

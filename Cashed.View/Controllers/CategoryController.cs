@@ -56,7 +56,7 @@ namespace Cashed.View.Controllers
                 return View(model);
         }
 
-        public async Task<JsonResult> Delete(string idList)
+        public async Task<JsonResult> Delete(string idList, bool onlyMark = true)
         {
             var ids = JsonConvert.DeserializeObject<int[]>(idList);
             var deletedIds = new List<int>();
@@ -64,7 +64,7 @@ namespace Cashed.View.Controllers
             {
                 try
                 {
-                    await _categoriesCommands.Delete(id);
+                    await _categoriesCommands.Delete(id, onlyMark);
                     deletedIds.Add(id);
                 }
                 catch (ArgumentException)

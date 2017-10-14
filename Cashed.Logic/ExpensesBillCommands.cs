@@ -16,7 +16,7 @@ namespace Logic.Cashed.Logic
             _unitOfWork = unitOfWork;
         }
 
-        public Task Delete(int id)
+        public Task Delete(int id, bool onlyMark = true)
         {
             throw new NotImplementedException();
         }
