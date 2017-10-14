@@ -33,11 +33,11 @@ namespace Logic.Cashed.Logic
         {
             var productRepo = _unitOfWork.GetNamedModelQueryRepository<Product>();
             var product = await productRepo.GetByName(name);
-            if (product == null)
-                throw new ArgumentException($"Нет продукта с названием {name}");
+            if (product == null) return null;
             return new ProductModel
             {
                 Id = product.Id,
+                CategoryId = product.CategoryId,
                 Name = product.Name
             };
         }
@@ -50,6 +50,7 @@ namespace Logic.Cashed.Logic
                 .Select(x => new ProductModel
                 {
                     Id = x.Id,
+                    CategoryId = x.CategoryId,
                     Name = x.Name
                 }).ToListAsync();
         }

@@ -51,6 +51,7 @@
     <Compile Include="CategoriesQueries.cs" />
     <Compile Include="ExpensesBillCommands.cs" />
     <Compile Include="ExpensesBillQueries.cs" />
+    <Compile Include="ProductCommands.cs" />
     <Compile Include="ProductQueries.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
