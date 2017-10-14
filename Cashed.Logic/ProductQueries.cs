@@ -1,6 +1,8 @@
 ﻿using Logic.Cashed.Contract;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
 using System.Threading.Tasks;
 using Logic.Cashed.Contract.Models;
 using Cashed.DataAccess.Contract;
@@ -38,6 +40,18 @@ namespace Logic.Cashed.Logic
                 Id = product.Id,
                 Name = product.Name
             };
+        }
+
+        public async Task<List<ProductModel>> GetCategoryProducts(int categoryId)
+        {
+            var productRepo = _unitOfWork.GetQueryRepository<Product>();
+            return await productRepo.Query
+                .Where(x => x.CategoryId == categoryId)
+                .Select(x => new ProductModel
+                {
+                    Id = x.Id,
+                    Name = x.Name
+                }).ToListAsync();
         }
     }
 }

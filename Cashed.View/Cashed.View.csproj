@@ -249,6 +249,7 @@
     <Compile Include="Models\ExpensesBillListViewModel.cs" />
     <Compile Include="Models\ExpensesBillsViewList.cs" />
     <Compile Include="Models\ExpenseItemViewModel.cs" />
+    <Compile Include="Models\ProductListViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -325,7 +326,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>62446</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>

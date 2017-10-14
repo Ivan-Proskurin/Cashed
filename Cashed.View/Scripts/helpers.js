@@ -3,7 +3,7 @@
     $(linkId).addClass("active");
 }
 
-function makeInputAutocomplete(inputId, list, onSelect) {
+function makeInputAutocomplete(inputId, list, onSelect, containerClass) {
 
     var input = document.getElementById(inputId);
 
@@ -21,7 +21,8 @@ function makeInputAutocomplete(inputId, list, onSelect) {
     }
 
     var cmb = $("div.awesomplete");
-    cmb.addClass("col-md-9");
+    if (!containerClass) containerClass = "col-md-9";
+    cmb.addClass(containerClass);
 
     var container = input.parentElement;
     var validation = $("span[data-valmsg-for=" + inputId + "]");
