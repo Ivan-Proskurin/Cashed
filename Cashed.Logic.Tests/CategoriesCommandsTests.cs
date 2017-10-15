@@ -1,14 +1,14 @@
-﻿using Cashed.DataAccess.Contract;
+﻿using System;
+using System.Threading.Tasks;
+using Cashed.DataAccess.Contract;
 using Cashed.DataAccess.Model;
+using Logic.Cashed.Contract;
 using Logic.Cashed.Contract.Models;
 using Logic.Cashed.Logic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
-using System.Threading.Tasks;
-using Logic.Cashed.Contract;
 
-namespace Cashed.DataAccess.Db.Tests
+namespace Cashed.Logic.Tests
 {
     [TestClass]
     public class CategoriesCommandsTests
@@ -22,7 +22,7 @@ namespace Cashed.DataAccess.Db.Tests
         public CategoriesCommandsTests()
         {
             _queriesMock = new Mock<INamedModelQueryRepository<Category>>();
-            _queriesMock.Setup(m => m.GetByName(It.IsAny<string>())).Returns<Category>(null);
+            _queriesMock.Setup(m => m.GetByName(It.IsAny<string>())).Returns<string>((s) => Task.FromResult<Category>(null));
             _commandsMock = new Mock<ICommandRepository<Category>>();
             _commandsMock.Setup(m => m.Create(It.IsAny<Category>()));
             _productQueriesMock = new Mock<IProductQueries>();
@@ -30,6 +30,7 @@ namespace Cashed.DataAccess.Db.Tests
             _uowMock = new Mock<IUnitOfWork>();
             _uowMock.Setup(m => m.GetQueryRepository<Category>()).Returns(_queriesMock.Object);
             _uowMock.Setup(m => m.GetCommandRepository<Category>()).Returns(_commandsMock.Object);
+            _uowMock.Setup(m => m.GetNamedModelQueryRepository<Category>()).Returns(_queriesMock.Object);
             _uowMock.Setup(m => m.Commit()).Returns(Task.Run(() => { }));
         }
 
