@@ -4,13 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{19596F9B-1CB1-4DD1-A997-809780EEBB54}</ProjectGuid>
+    <ProjectGuid>{2D0769C5-28A4-4B69-93A1-E0299B25ADB7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Logic.Cashed.Contract</RootNamespace>
-    <AssemblyName>Cashed.Contract</AssemblyName>
+    <RootNamespace>Cashed.Extensions</RootNamespace>
+    <AssemblyName>Cashed.Extensions</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -40,32 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ICategoriesCommands.cs" />
-    <Compile Include="ICategoriesQueries.cs" />
-    <Compile Include="ICommonModelQueries.cs" />
-    <Compile Include="IExpensesBillCommands.cs" />
-    <Compile Include="IExpensesBillQueries.cs" />
-    <Compile Include="IGenericModelCommands.cs" />
-    <Compile Include="IIncomeItemCommands.cs" />
-    <Compile Include="IIncomeItemQueries.cs" />
-    <Compile Include="IIncomeTypeCommands.cs" />
-    <Compile Include="IIncomeTypeQueries.cs" />
-    <Compile Include="IProductCommands.cs" />
-    <Compile Include="IProductQueries.cs" />
-    <Compile Include="IUserSettings.cs" />
-    <Compile Include="Models\CategoryList.cs" />
-    <Compile Include="Models\CategoryModel.cs" />
-    <Compile Include="Models\ExpenseItemModel.cs" />
-    <Compile Include="Models\ExpenseBillModel.cs" />
-    <Compile Include="Models\TotalsInfoModel.cs" />
-    <Compile Include="Models\GetModelListArgs.cs" />
-    <Compile Include="Models\IncomeItemModel.cs" />
-    <Compile Include="Models\IncomeTypeModel.cs" />
-    <Compile Include="Models\PaginationInfo.cs" />
-    <Compile Include="Models\ProductList.cs" />
-    <Compile Include="Models\ProductModel.cs" />
+    <Compile Include="DateTimeExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

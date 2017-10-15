@@ -45,6 +45,8 @@
     <Compile Include="Basic\Product.cs" />
     <Compile Include="Expenses\ExpenseBill.cs" />
     <Compile Include="Expenses\ExpenseItem.cs" />
+    <Compile Include="Incomes\IncomeItem.cs" />
+    <Compile Include="Incomes\IncomeType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -8,6 +8,6 @@ namespace Logic.Cashed.Contract
     public interface IExpensesBillQueries : ICommonModelQueries<ExpenseBillModel>
     {
         Task<List<ExpenseBillModel>> GetFiltered(DateTime dateFrom, DateTime dateTo);
-        ExpensesTotalsModel GetTotals(List<ExpenseBillModel> bills);
+        TotalsInfoModel GetTotals(List<ExpenseBillModel> bills);
     }
 }

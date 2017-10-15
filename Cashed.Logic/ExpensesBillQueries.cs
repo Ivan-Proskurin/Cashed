@@ -118,19 +118,19 @@ namespace Logic.Cashed.Logic
             throw new System.NotImplementedException();
         }
 
-        public ExpensesTotalsModel GetTotals(List<ExpenseBillModel> bills)
+        public TotalsInfoModel GetTotals(List<ExpenseBillModel> bills)
         {
             if (bills.Count > 0)
             {
                 var orderedBills = bills.OrderBy(x => x.DateTime).ToList();
-                var totals = new ExpensesTotalsModel
+                var totals = new TotalsInfoModel
                 {
                     Caption = $"Итог за {orderedBills.FirstOrDefault()?.DateTime: yyyy.MM.dd} - {orderedBills.LastOrDefault()?.DateTime: yyyy.MM.dd}: ",
                     Total = bills.Sum(x => x.Cost)
                 };
                 return totals;
             }
-            return new ExpensesTotalsModel
+            return new TotalsInfoModel
             {
                 Caption = "Итог:",
                 Total = 0m

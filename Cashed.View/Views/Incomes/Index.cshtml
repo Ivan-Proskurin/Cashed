@@ -1,0 +1,78 @@
+﻿@model Cashed.View.Models.IncomeTypesListViewModel
+
+@{
+    ViewBag.Title = "Доходы";
+}
+
+@Html.ValidationSummary()
+
+<div class="container">
+    <div class="row">
+        <span class="expenses-header col-sm-2">Доходы</span>
+        <div class="col-md-10">
+            @using (@Html.BeginForm())
+            {
+                <div class="form-group row">
+                    <span class="col-md-1 filter-caption">От:</span>
+                    <div id='datepicker-from' class='input-group date col-md-4'>
+                        @Html.TextBoxFor(m => m.Filter.DateFrom, new { @class = "form-control", autocomplete = "off" })
+                        <span class="input-group-addon" id="date-picker-button-from">
+                            <i class="fa fa-calendar"></i>
+                        </span>
+                    </div>
+                    <span class="col-md-1 filter-caption">До:</span>
+                    <div id='datepicker-to' class='input-group date col-md-4'>
+                        @Html.TextBoxFor(m => m.Filter.DateTo, new { @class = "form-control", autocomplete = "off" })
+                        <span class="input-group-addon" id="date-picker-button-to">
+                            <i class="fa fa-calendar"></i>
+                        </span>
+                    </div>
+
+                    <button type="submit" class="input-group-addon cursor-pointer" id="refresh-button">
+                        <i class="fa fa-refresh"></i>
+                    </button>
+
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<table class="expenses-table table table-striped table-hover">
+    <thead class="thead-inverse">
+        <tr>
+            <th>Номер</th>
+            <th>Название</th>
+            <th>Общая сумма</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 0; i < Model.List.Count; i++)
+        {
+            <tr data-id="@Model.List[i]">
+                <td>@Model.List[i].Id</td>
+                <td>@Html.ActionLink(Model.List[i].Name, "EditIncomeType", new { id = Model.List[i].Id }, new { @class = "edit-item-link" })</td>
+                <td>@Model.List[i].SumTotal</td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr class="table-dark">
+            <td colspan="2" class="expenses-totals-caption">@Model.Total.Caption</td>
+            <td>@Model.Total.Total</td>
+        </tr>
+    </tfoot>
+</table>
+@Html.ActionLink("Добавить статью доходов", "AddIncomeType", null, new { @class = "btn btn-primary" })
+@Html.ActionLink("Добавить доход", "AddIncome", null, new { @class = "btn btn-primary" })
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+        activateLink("#incomesLink");
+
+        makeInputDatetimePicker("Filter_DateFrom");
+        makeInputDatetimePicker("Filter_DateTo");
+
+    </script>
+}

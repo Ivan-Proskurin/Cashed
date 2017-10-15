@@ -94,3 +94,9 @@ a.edit-item-link {
 .cursor-pointer {
     cursor: pointer;
 }
+
+.centered-form {
+    width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}

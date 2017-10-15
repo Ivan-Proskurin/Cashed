@@ -70,6 +70,10 @@
     <Compile Include="Migrations\201710141256101_IsDeletedField.Designer.cs">
       <DependentUpon>201710141256101_IsDeletedField.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201710151146391_Incomes.cs" />
+    <Compile Include="Migrations\201710151146391_Incomes.Designer.cs">
+      <DependentUpon>201710151146391_Incomes.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NamedModelQueryRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -94,6 +98,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201710141256101_IsDeletedField.resx">
       <DependentUpon>201710141256101_IsDeletedField.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710151146391_Incomes.resx">
+      <DependentUpon>201710151146391_Incomes.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

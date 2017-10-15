@@ -239,11 +239,14 @@
     <Compile Include="Controllers\CategoryController.cs" />
     <Compile Include="Controllers\ExpensesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\IncomesController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AddCategoryViewModel.cs" />
+    <Compile Include="Models\AddIncomeViewModel.cs" />
+    <Compile Include="Models\EditIncomeTypeViewModel.cs" />
     <Compile Include="Models\CategoryListViewModel.cs" />
     <Compile Include="Models\EditCategoryViewModel.cs" />
     <Compile Include="Models\EditProductViewModel.cs" />
@@ -253,6 +256,8 @@
     <Compile Include="Models\ExpenseItemViewModel.cs" />
     <Compile Include="Models\ExpensesListFilter.cs" />
     <Compile Include="Models\ExpensesTotalsViewModel.cs" />
+    <Compile Include="Models\IncomesListFilter.cs" />
+    <Compile Include="Models\IncomeTypesListViewModel.cs" />
     <Compile Include="Models\ProductListViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -281,6 +286,10 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Expenses\GetSubtotal.cshtml" />
     <Content Include="Views\Products\Edit.cshtml" />
+    <Content Include="Views\Incomes\Index.cshtml" />
+    <Content Include="Views\Incomes\AddIncomeType.cshtml" />
+    <Content Include="Views\Incomes\EditIncomeType.cshtml" />
+    <Content Include="Views\Incomes\AddIncome.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -295,6 +304,10 @@
     <ProjectReference Include="..\Cashed.Contract\Cashed.Contract.csproj">
       <Project>{19596F9B-1CB1-4DD1-A997-809780EEBB54}</Project>
       <Name>Cashed.Contract</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cashed.Extensions\Cashed.Extensions.csproj">
+      <Project>{2d0769c5-28a4-4b69-93a1-e0299b25adb7}</Project>
+      <Name>Cashed.Extensions</Name>
     </ProjectReference>
     <ProjectReference Include="..\Cashed.Logic\Cashed.Logic.csproj">
       <Project>{32d44de7-06e5-4e6a-bff3-a382e3a44d6a}</Project>
