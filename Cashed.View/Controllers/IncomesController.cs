@@ -1,12 +1,11 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web.Mvc;
+﻿using Cashed.Extensions;
 using Cashed.View.Models;
 using Logic.Cashed.Contract;
 using Logic.Cashed.Contract.Models;
-using Cashed.Extensions;
-using System.Globalization;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Web.Mvc;
 
 namespace Cashed.View.Controllers
 {
@@ -113,7 +112,8 @@ namespace Cashed.View.Controllers
         {
             var model = await _incomeTypeQueries.GetById(id);
             if (model == null)
-                RedirectToAction("Index");
+                return RedirectToAction("Index");
+
             var viewModel = new EditIncomeTypeViewModel
             {
                 Id = model.Id,
@@ -165,7 +165,7 @@ namespace Cashed.View.Controllers
                     if (type == null)
                         throw new ArgumentException("Не найдено статьи расходов по имени.");
                     var dateTime = viewModel.DateTime.ParseDtFromStandardString();
-                    var total = decimal.Parse(viewModel.Total.Replace(',', '.'), CultureInfo.InvariantCulture);
+                    var total = viewModel.Total.ParseMoneyInvariant();
 
                     var model = new IncomeItemModel
                     {

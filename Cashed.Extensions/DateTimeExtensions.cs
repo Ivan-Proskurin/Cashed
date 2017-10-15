@@ -5,6 +5,8 @@ namespace Cashed.Extensions
 {
     public static class DateTimeExtensions
     {
+        private static readonly CultureInfo culture = new CultureInfo("ru-ru");
+
         public static DateTime StartOfTheMonth(this DateTime value)
         {
             return new DateTime(value.Year, value.Month, 1);
@@ -27,7 +29,7 @@ namespace Cashed.Extensions
 
         public static DateTime ParseDtFromStandardString(this string value)
         {
-            return DateTime.ParseExact(value, "yyyy.MM.dd HH:mm", new CultureInfo("ru-ru"));
+            return DateTime.ParseExact(value, "yyyy.MM.dd HH:mm", culture);
         }
     }
 }

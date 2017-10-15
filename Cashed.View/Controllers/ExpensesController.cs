@@ -7,15 +7,13 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using Cashed.Extensions;
 
 namespace Cashed.View.Controllers
 {
     public class ExpensesController : Controller
     {
         private static readonly string CurrentBillSessionName = "CurrentBill";
-        private static readonly string DateFormat = "yyyy.MM.dd";
-        private static readonly string DateTimeFormat = "yyyy.MM.dd HH:mm";
-        private static readonly string DateFormatToHours = "yyyy.MM.dd HH:00";
 
         private readonly IExpensesBillQueries _expensesBillQueries;
         private readonly ICategoriesQueries _categoriesQueries;
@@ -42,7 +40,7 @@ namespace Cashed.View.Controllers
                 Bills = bills.Select(x => new ExpensesBillListViewModel
                 {
                     Id = x.Id,
-                    DateTime = x.DateTime.ToString(DateTimeFormat),
+                    DateTime = x.DateTime.ToStandardString(),
                     Category = x.Category,
                     Cost = x.Cost
                 }).ToList(),
@@ -55,8 +53,8 @@ namespace Cashed.View.Controllers
 
                 Filter = new ExpensesListFilter
                 {
-                    DateFrom = dateFrom.ToString(DateTimeFormat),
-                    DateTo = dateTo.ToString(DateTimeFormat)
+                    DateFrom = dateFrom.ToStandardString(),
+                    DateTo = dateTo.ToStandardString()
                 }
             };
         }
@@ -70,21 +68,20 @@ namespace Cashed.View.Controllers
         [HttpPost]
         public async Task<ActionResult> Index(ExpensesBillsViewList model)
         {
-            var culture = new CultureInfo("ru-ru");
             var dateFrom = DateTime.Today;
             var dateTo = DateTime.Today.AddDays(1);
             if (ModelState.IsValid)
             {
                 try
                 {
-                    dateFrom = DateTime.ParseExact(model.Filter.DateFrom, DateTimeFormat, culture);
-                    dateTo = DateTime.ParseExact(model.Filter.DateTo, DateTimeFormat, culture);
+                    dateFrom = model.Filter.DateFrom.ParseDtFromStandardString();
+                    dateTo = model.Filter.DateTo.ParseDtFromStandardString();
                     if (dateFrom >= dateTo)
                         throw new ArgumentException("Дата До не может быть меньше или равной дате От");
                 }
                 catch (FormatException)
                 {
-                    ModelState.AddModelError(string.Empty, "Одна из введенных дат имела неверный формат");
+                    ModelState.AddModelError(string.Empty, @"Одна из введенных дат имела неверный формат");
                 }
                 catch (ArgumentException ex)
                 {
@@ -105,7 +102,7 @@ namespace Cashed.View.Controllers
             var model = new ExpenseItemViewModel
             {
                 Id = id,
-                DateTime = datetime ?? DateTime.Now.ToString(DateFormatToHours),
+                DateTime = datetime ?? DateTime.Now.ToStandardString(false),
                 Category = category,
                 NoItems = noItems
             };
@@ -152,15 +149,14 @@ namespace Cashed.View.Controllers
             var model = new ExpenseItemModel
             {
                 Id = -1,
-                DateTime = DateTime.ParseExact(viewModel.DateTime, DateTimeFormat, CultureInfo.InvariantCulture),
+                DateTime = viewModel.DateTime.ParseDtFromStandardString(),
                 CategoryId = category.Id,
                 Category = category.Name,
                 ProductId = product.Id,
                 Product = product.Name,
-                Cost = decimal.Parse(viewModel.Price.Replace(',', '.'), CultureInfo.InvariantCulture),
+                Cost = viewModel.Price.ParseMoneyInvariant(),
                 Quantity = string.IsNullOrWhiteSpace(viewModel.Quantity) ?
-                    1 :
-                    decimal.Parse(viewModel.Quantity.Replace(',', '.'), CultureInfo.InvariantCulture),
+                    1 : viewModel.Quantity.ParseMoneyInvariant(),
                 Comment = viewModel.Comment
             };
 
@@ -175,8 +171,7 @@ namespace Cashed.View.Controllers
 
         private ExpenseBillModel GetCurrentBill()
         {
-            var bill = Session[CurrentBillSessionName] as ExpenseBillModel;
-            if (bill == null)
+            if (!(Session[CurrentBillSessionName] is ExpenseBillModel bill))
             {
                 bill = new ExpenseBillModel
                 {
@@ -199,7 +194,7 @@ namespace Cashed.View.Controllers
             var bill = GetCurrentBill();
             var subtotal = new ExpenseBillViewModel
             {
-                DateTime = bill.Items.Count > 0 ? "за " + bill.DateTime.ToString(DateFormat) : string.Empty,
+                DateTime = bill.Items.Count > 0 ? "за " + bill.DateTime.ToStandardDateStr() : string.Empty,
                 Subtotal = bill.Cost.ToString(culture),
                 Subtotals = bill.Items.Select(x => new ExpenseItemViewModel
                 {
