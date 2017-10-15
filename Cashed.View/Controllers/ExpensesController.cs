@@ -171,7 +171,8 @@ namespace Cashed.View.Controllers
 
         private ExpenseBillModel GetCurrentBill()
         {
-            if (!(Session[CurrentBillSessionName] is ExpenseBillModel bill))
+            var bill = Session[CurrentBillSessionName] as ExpenseBillModel;
+            if (bill == null)
             {
                 bill = new ExpenseBillModel
                 {
