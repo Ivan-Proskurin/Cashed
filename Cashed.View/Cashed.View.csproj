@@ -244,6 +244,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AddCategoryViewModel.cs" />
+    <Compile Include="Models\CategoryListViewModel.cs" />
     <Compile Include="Models\EditCategoryViewModel.cs" />
     <Compile Include="Models\EditProductViewModel.cs" />
     <Compile Include="Models\ExpenseBillViewModel.cs" />

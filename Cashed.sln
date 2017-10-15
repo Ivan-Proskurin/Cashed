@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.8
+VisualStudioVersion = 15.0.27004.2002
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0 DataAccess", "0 DataAccess", "{63ABFAC4-6070-4281-8FE3-A4C2890BE420}"
 EndProject
@@ -24,6 +24,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3 Tests", "3 Tests", "{917D5BBB-205D-4B72-B521-DB094C8E05A8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess.Db.Tests", "DataAccess.Db.Tests\DataAccess.Db.Tests.csproj", "{923DFDC8-ACCD-47FE-B25E-91FCFBDD0E71}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cashed.Logic.Tests", "Cashed.Logic.Tests\Cashed.Logic.Tests.csproj", "{CADDB73B-EB82-4F1E-A33D-2C0CC24CF986}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,6 +61,10 @@ Global
 		{923DFDC8-ACCD-47FE-B25E-91FCFBDD0E71}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{923DFDC8-ACCD-47FE-B25E-91FCFBDD0E71}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{923DFDC8-ACCD-47FE-B25E-91FCFBDD0E71}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CADDB73B-EB82-4F1E-A33D-2C0CC24CF986}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CADDB73B-EB82-4F1E-A33D-2C0CC24CF986}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CADDB73B-EB82-4F1E-A33D-2C0CC24CF986}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CADDB73B-EB82-4F1E-A33D-2C0CC24CF986}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -71,6 +77,7 @@ Global
 		{19596F9B-1CB1-4DD1-A997-809780EEBB54} = {C67C8827-1B4E-4876-914A-DE241ABF4F7E}
 		{0B3900E5-EF32-4F71-8B80-0879E747D808} = {63ABFAC4-6070-4281-8FE3-A4C2890BE420}
 		{923DFDC8-ACCD-47FE-B25E-91FCFBDD0E71} = {917D5BBB-205D-4B72-B521-DB094C8E05A8}
+		{CADDB73B-EB82-4F1E-A33D-2C0CC24CF986} = {917D5BBB-205D-4B72-B521-DB094C8E05A8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A8989890-FDE8-40DB-A5B1-1A755167981C}

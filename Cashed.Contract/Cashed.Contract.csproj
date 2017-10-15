@@ -48,10 +48,15 @@
     <Compile Include="IGenericModelCommands.cs" />
     <Compile Include="IProductCommands.cs" />
     <Compile Include="IProductQueries.cs" />
+    <Compile Include="IUserSettings.cs" />
+    <Compile Include="Models\CategoryList.cs" />
     <Compile Include="Models\CategoryModel.cs" />
     <Compile Include="Models\ExpenseItemModel.cs" />
     <Compile Include="Models\ExpenseBillModel.cs" />
     <Compile Include="Models\ExpensesTotalsModel.cs" />
+    <Compile Include="Models\GetModelListArgs.cs" />
+    <Compile Include="Models\PaginationInfo.cs" />
+    <Compile Include="Models\ProductList.cs" />
     <Compile Include="Models\ProductModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

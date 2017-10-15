@@ -76,5 +76,28 @@ namespace Logic.Cashed.Logic
                 .ToListAsync();
             return products;
         }
+
+        public async Task<CategoryList> GetList(GetModelListArgs args)
+        {
+            var repo = _unitOfWork.GetQueryRepository<Category>();
+            var query = args.IncludeDeleted ? repo.Query : repo.Query.Where(x => !x.IsDeleted);
+            var totalCount = await query.CountAsync();
+            var pagination = PaginationInfo.FromArgs(args, totalCount);
+            var models = await query
+                .OrderBy(x => x.Id)
+                .Skip(pagination.Skipped).Take(pagination.Taken)
+                .Select(x => new CategoryModel
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        ProductCount = x.Products.Count
+                    }
+                ).ToListAsync();
+            return new CategoryList()
+            {
+                List = models,
+                Pagination = pagination
+            };
+        }
     }
 }

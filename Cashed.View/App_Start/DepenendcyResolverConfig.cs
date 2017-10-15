@@ -25,6 +25,7 @@ namespace Cashed.View.App_Start
             _kernel.Bind<IProductQueries>().To<ProductQueries>();
             _kernel.Bind<IExpensesBillCommands>().To<ExpensesBillCommands>();
             _kernel.Bind<IProductCommands>().To<ProductCommands>();
+            _kernel.Bind<IUserSettings>().To<UserSettings>();
         }
     }
 }

@@ -13,18 +13,59 @@ namespace Cashed.View.Controllers
     {
         private readonly ICategoriesQueries _categoriesQueries;
         private readonly ICategoriesCommands _categoriesCommands;
+        private readonly IUserSettings _userSettings;
 
         public CategoryController(ICategoriesQueries categoriesQueries, 
-            ICategoriesCommands categoriesCommands)
+            ICategoriesCommands categoriesCommands, IUserSettings userSettings)
         {
             _categoriesQueries = categoriesQueries;
             _categoriesCommands = categoriesCommands;
+            _userSettings = userSettings;
         }
 
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(int page = 1)
         {
-            var cats = await _categoriesQueries.GetAll();
-            return View(cats);
+            var viewModel = new CategoryListViewModel
+            {
+                List = await _categoriesQueries.GetList(new GetModelListArgs
+                {
+                    ItemsPerPage = _userSettings.ItemsPerPage,
+                    PageNumber = page,
+                    IncludeDeleted = false
+                })
+            };
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Add(CategoryListViewModel model)
+        {
+            if (ModelState.IsValid)
+            try
+            {
+                var categoryName = model.Category;
+                var category = await _categoriesQueries.GetByName(categoryName);
+                if (category != null)
+                    throw new ArgumentException($"Категория с названием \"{categoryName}\" уже есть");
+                var cat = new CategoryModel
+                {
+                    Id = -1,
+                    Name = categoryName
+                };
+                await _categoriesCommands.Update(cat);
+                return RedirectToAction("Index", new { page = -1 });
+            }
+            catch (ArgumentException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+            }
+            model.List = await _categoriesQueries.GetList(new GetModelListArgs
+            {
+                ItemsPerPage = _userSettings.ItemsPerPage,
+                PageNumber = 1,
+                IncludeDeleted = false
+            });
+            return View("Index", model);
         }
 
         public async Task<JsonResult> AddCategory(string categoryName)
@@ -66,11 +107,6 @@ namespace Cashed.View.Controllers
             }
             return Json(deletedIds.ToArray(), JsonRequestBehavior.AllowGet);
         }
-
-        //private async void DeleteCategory(int id)
-        //{
-        //    await _categoriesCommands.Delete(id);
-        //}
 
         public async Task<ActionResult> Edit(int id)
         {

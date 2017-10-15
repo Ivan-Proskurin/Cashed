@@ -1,4 +1,4 @@
-﻿@model List<Logic.Cashed.Contract.Models.CategoryModel>
+﻿@model Cashed.View.Models.CategoryListViewModel
 @{
     ViewBag.Title = "Категории";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -27,48 +27,93 @@
         </tr>
     </thead>
     <tbody id="cat-table-body">
-        @for (int i = 0; i < Model.Count; i++)
-        {
-            <tr data-id="@Model[i].Id">
-                <td class="checkbox-cell" hidden>
-                    <input type="checkbox" class="category-checkbox" data-id="@Model[i].Id"/>
-                </td>
-                <td>@Model[i].Id</td>
-                <td>
-                    @Html.ActionLink(Model[i].Name, "Edit", new { id = Model[i].Id }, new { @class = "edit-item-link" })
-                </td>
-                <td>
-                    @Html.ActionLink(Model[i].ProductCount.ToString(), "Index", "Products", 
-                        new { categoryName = Model[i].Name }, new { @class = "edit-item-link" })
-                </td>
-            </tr>
-        }
+        
+    @for (int i = 0; i < Model.List.List.Count; i++)
+    {
+        <tr data-id="@Model.List.List[i].Id">
+            <td class="checkbox-cell" hidden>
+                <input type="checkbox" class="category-checkbox" data-id="@Model.List.List[i].Id"/>
+            </td>
+            <td>@Model.List.List[i].Id</td>
+            <td>
+                @Html.ActionLink(Model.List.List[i].Name, "Edit", new {id = Model.List.List[i].Id}, new {@class = "edit-item-link"})
+            </td>
+            <td>
+                @Html.ActionLink(Model.List.List[i].ProductCount.ToString(), "Index", "Products",
+                    new {categoryName = Model.List.List[i].Name}, new {@class = "edit-item-link"})
+            </td>
+        </tr>
+    }
+
     </tbody>
 </table>
 
-<div id="enter-cat-name" class="validation-summary-errors validation-string no-items-message" hidden="hidden">
-    Введите название категории!
-</div>
+<!-- Pagination -->
+<nav aria-label="Categories page navigation">
+    <ul class="pagination justify-content-end">
+        @if (Model.List.Pagination.PageNumber == 1)
+        {
+            <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1">Назад</a>
+            </li>
+        }
+        else
+        {
+            <li class="page-item">
+                @Html.ActionLink("Назад", 
+                    "Index", new { page = Model.List.Pagination.PageNumber - 1 }, new { @class = "page-link" })
+            </li>
+        }
+        @for (var i = 1; i <= Model.List.Pagination.TotalPageCount; i++)
+        {
+            if (Model.List.Pagination.PageNumber == i)
+            {
+                <li class="page-item active">
+                    <a class="page-link" href="#">@i</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item">
+                    @Html.ActionLink(@i.ToString(), "Index", new { page = i }, new { @class = "page-link" })
+                </li>
+            }
+        }
+        @if (Model.List.Pagination.PageNumber == Model.List.Pagination.TotalPageCount)
+        {
+            <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1">Далее</a>
+            </li>        }
+        else
+        {
+            <li class="page-item">
+                @Html.ActionLink("Далее",
+                    "Index", new { page = Model.List.Pagination.PageNumber + 1 }, new { @class = "page-link" })
+            </li>
+        }
+    </ul>
+</nav>
 
-<div id="cat-exists" class="validation-summary-errors validation-string no-items-message" hidden="hidden">
-    Такая категория уже есть!
-</div>
+<!-- Adding category -->
+@using (Html.BeginForm("Add", "Category"))
+{
+    @Html.ValidationSummary()
 
-<div class="container">
-    <div class="row">
-        <div class="form-group row">
-            <label class="col-form-label col-md-4" for="Category">Название категории</label>
-            <div class="col-md-6">
-                <input id="Category" type="text" class="form-control"/>
-            </div>
-            <div class="col-md-2">
-                <button id="add-cat-btn" class="btn btn-primary">Добавить</button>
+    <div class="container">
+        <div class="row">
+            <div class="form-group row">
+                <label class="col-form-label col-md-4" for="Category">Название категории</label>
+                <div class="col-md-6">
+                    @Html.TextBoxFor(m => m.Category, new { @class = "form-control" })
+                </div>
+                <div class="col-md-2">
+                    <button id="add-cat-btn" type="submit" class="btn btn-primary">Добавить</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
-
-<!-- Modal -->
+}
+<!-- Deletion modal -->
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -141,10 +186,11 @@
                 contentType: "application/json; charset=utf-8",
                 data: { idList: JSON.stringify(getDeleteIdList()), onlyMark: onlyMark },
                 dataType: "json",
-                success: function(data) {
-                    deleteRows(data);
+                success: function (data) {
+                    location.reload();
+                    //deleteRows(data);
                 },
-                error: function() { alert('Failure'); }
+                error: function() { alert('Server failure!'); }
             });
         }
 
@@ -160,43 +206,33 @@
             return idList;
         }
 
-        function deleteRows(ids) {
-            for (var i = 0; i < ids.length; i++) {
-                var tr = $("tr[data-id=" + ids[i] + "]");
-                console.log(tr);
-                tr.remove();
-            }
-            categoryCheckboxChanged();
-        }
+        //function deleteRows(ids) {
+        //    for (var i = 0; i < ids.length; i++) {
+        //        var tr = $("tr[data-id=" + ids[i] + "]");
+        //        console.log(tr);
+        //        tr.remove();
+        //    }
+        //    categoryCheckboxChanged();
+        //}
 
-        function addCategoryToTable(table, model) {
-            hideCheckboxes();
-            $('<tr>').addClass("data-row")
-                .attr("data-id", model.Id)
-                .append($("<td>").addClass("checkbox-cell").attr("hidden", "hidden")
-                    .append($("<input>").attr("type", "checkbox").addClass("category-checkbox")
-                        .attr("data-id", model.Id).change(categoryCheckboxChanged)))
-                .append($('<td>').html(
-                    model.Id
-                ))
-                .append($('<td>')
-                    .append($("<a>").attr("href", "/Category/Edit?id=" + model.Id).addClass("edit-item-link").html(model.Name)))
-                .append($('<td>')
-                    .append($("<a>").attr("href", "/Products/Index?categoryName=" + model.Name).addClass("edit-item-link").html(model.ProductCount)))
-                .appendTo(table);
-        }
+        //function addCategoryToTable(table, model) {
+        //    hideCheckboxes();
+        //    $('<tr>').addClass("data-row")
+        //        .attr("data-id", model.Id)
+        //        .append($("<td>").addClass("checkbox-cell").attr("hidden", "hidden")
+        //            .append($("<input>").attr("type", "checkbox").addClass("category-checkbox")
+        //                .attr("data-id", model.Id).change(categoryCheckboxChanged)))
+        //        .append($('<td>').html(
+        //            model.Id
+        //        ))
+        //        .append($('<td>')
+        //            .append($("<a>").attr("href", "/Category/Edit?id=" + model.Id).addClass("edit-item-link").html(model.Name)))
+        //        .append($('<td>')
+        //            .append($("<a>").attr("href", "/Products/Index?categoryName=" + model.Name).addClass("edit-item-link").html(model.ProductCount)))
+        //        .appendTo(table);
+        //}
 
-        $("#add-cat-btn").click(function() {
-            var catName = $("#Category").val();
-            if (!catName) {
-                $("#enter-cat-name").removeAttr("hidden");
-            } else {
-                $("#enter-cat-name").attr("hidden", "hidden");
-                addCategory(catName);
-            }
-        });
-
-        function addCategory(catName) {
+        @*function addCategory(catName) {
             $.ajax({
                 type: "GET",
                 url: '@Url.Action("AddCategory", "Category")',
@@ -216,7 +252,7 @@
                 },
                 error: function() { alert('Server failure!'); }
             });
-        }
+        }*@
 
     </script>
 
