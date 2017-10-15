@@ -21,6 +21,9 @@
             <th>
                 Название
             </th>
+            <th>
+                Продуктов
+            </th>
         </tr>
     </thead>
     <tbody id="cat-table-body">
@@ -33,6 +36,10 @@
                 <td>@Model[i].Id</td>
                 <td>
                     @Html.ActionLink(Model[i].Name, "Edit", new { id = Model[i].Id }, new { @class = "edit-item-link" })
+                </td>
+                <td>
+                    @Html.ActionLink(Model[i].ProductCount.ToString(), "Index", "Products", 
+                        new { categoryName = Model[i].Name }, new { @class = "edit-item-link" })
                 </td>
             </tr>
         }
@@ -167,14 +174,15 @@
             $('<tr>').addClass("data-row")
                 .attr("data-id", model.Id)
                 .append($("<td>").addClass("checkbox-cell").attr("hidden", "hidden")
-                    .append($("<input>").attr("type", "checkbox").addClass("product-checkbox")
+                    .append($("<input>").attr("type", "checkbox").addClass("category-checkbox")
                         .attr("data-id", model.Id).change(categoryCheckboxChanged)))
                 .append($('<td>').html(
                     model.Id
                 ))
-                .append($('<td>').html(
-                    model.Name
-                ))
+                .append($('<td>')
+                    .append($("<a>").attr("href", "/Category/Edit?id=" + model.Id).addClass("edit-item-link").html(model.Name)))
+                .append($('<td>')
+                    .append($("<a>").attr("href", "/Products/Index?categoryName=" + model.Name).addClass("edit-item-link").html(model.ProductCount)))
                 .appendTo(table);
         }
 

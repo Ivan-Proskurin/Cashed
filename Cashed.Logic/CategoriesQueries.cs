@@ -27,7 +27,8 @@ namespace Logic.Cashed.Logic
                 .Select(x => new CategoryModel
                 {
                     Id = x.Id,
-                    Name = x.Name
+                    Name = x.Name,
+                    ProductCount = x.Products.Count
                 }
                 ).ToListAsync();
         }
@@ -39,7 +40,8 @@ namespace Logic.Cashed.Logic
                 .Select(x => new CategoryModel
                 {
                     Id = x.Id,
-                    Name = x.Name
+                    Name = x.Name,
+                    ProductCount = x.Products.Count
                 }
             ).FirstOrDefaultAsync();
         }
@@ -51,7 +53,8 @@ namespace Logic.Cashed.Logic
             return new CategoryModel
             {
                 Id = category.Id,
-                Name = category.Name
+                Name = category.Name,
+                ProductCount = category.Products.Count
             };
         }
 
