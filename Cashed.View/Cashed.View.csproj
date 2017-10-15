@@ -250,6 +250,8 @@
     <Compile Include="Models\ExpensesBillListViewModel.cs" />
     <Compile Include="Models\ExpensesBillsViewList.cs" />
     <Compile Include="Models\ExpenseItemViewModel.cs" />
+    <Compile Include="Models\ExpensesListFilter.cs" />
+    <Compile Include="Models\ExpensesTotalsViewModel.cs" />
     <Compile Include="Models\ProductListViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

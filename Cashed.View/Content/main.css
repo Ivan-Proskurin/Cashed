@@ -17,6 +17,8 @@ a.edit-item-link {
 .expenses-header {
     font-size: 20px;
     font-weight: bold;
+    vertical-align: bottom;
+    padding-top: 5px;
 }
 
 .expenses-table {
@@ -66,6 +68,10 @@ a.edit-item-link {
     margin-top: 3px;
 }
 
+.expenses-totals-caption {
+    text-align: right;
+}
+
 .awesomplete-padding-fix {
     padding-left: 0;
     padding-right: 0;
@@ -78,4 +84,13 @@ a.edit-item-link {
 
 .bottom-buttons-row {
     margin-top: 30px;
+}
+
+.filter-caption {
+    font-weight: bold;
+    padding-top: 7px;
+}
+
+.cursor-pointer {
+    cursor: pointer;
 }

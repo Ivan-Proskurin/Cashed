@@ -1,9 +1,16 @@
 ﻿@model Cashed.View.Models.ExpenseItemViewModel
 @{
-    ViewBag.Title = "Новый счет";
+    ViewBag.Title = "Операции с расходами";
 }
 
-<h3 class="form-caption-bg">Новый счет</h3>
+@if (Model.Id == -1)
+{
+    <h3 class="form-caption-bg">Новый счет</h3>
+}
+else
+{
+    <h3 class="form-caption-bg">Редактирование счета</h3>
+}
 @Html.ValidationSummary(true)
 @if (Model.NoItems)
 {
@@ -16,6 +23,8 @@
         <div class="col">
             @using (Html.BeginForm())
             {
+                @Html.HiddenFor(x => x.Id)
+
                 <div class="container">
                     <div class="row">
                         <div class="column-header-col col col-sm-8">
@@ -29,7 +38,7 @@
                 <div class="form-group row">
                     <label class="col-form-label col-md-3" for="datepicker">Дата/время*</label>
                     <div id='datepicker' class='input-group date col-md-9' >
-                        @Html.TextBoxFor(m => m.DateTime, new { @class = "form-control" })
+                        @Html.TextBoxFor(m => m.DateTime, new { @class = "form-control", autocomplete="off" })
                         <span class="input-group-addon" id="date-picker-button">
                             <i class="fa fa-calendar"></i>
                         </span>
@@ -86,7 +95,6 @@
                     </div>
                     <div class="col col-sm-3">
                         @Html.ActionLink("Подтвердить", "CommitBill", null, new { @class = "btn btn-danger btn-sm" })
-                        @*<button class="btn btn-danger btn-sm">Подтвердить</button>*@
                     </div>
                 </div>
             </div>
@@ -98,35 +106,17 @@
 @section Scripts
 {
     <script type="text/javascript">
-        $(document).ready(function () {
-            $("#datepicker").datetimepicker({
-                onSelectDate: propagateDateTimeToPicker,
-                onSelectTime: propagateDateTimeToPicker,
-                dayOfWeekStart: 1,
-                closeOnDateSelect: true
+        $(document).ready(function() {
+
+            makeInputDatetimePicker("DateTime");
+
+        });
+
+        makeInputAutocomplete("Category",
+            null,
+            function() {
+                updateProducts($("#Category").val());
             });
-
-        });
-
-        function propagateDateTimeToPicker(dt) {
-            $("#DateTime").val(formatDateTime(dt));
-        }
-
-        function formatDateTime(dt) {
-            var year = dt.getFullYear();
-            var month = dt.getMonth();
-            if (month < 10) month = "0" + month;
-            var day = dt.getDate();
-            if (day < 10) day = "0" + day;
-            var hours = dt.getHours();
-            if (hours == 0) hours = "00";
-            else if (hours < 0) hours = "0" + hours;
-            return year + "." + month + "." + day + " " + hours + ":00";
-        }
-
-        makeInputAutocomplete("Category", null, function () {
-            updateProducts($("#Category").val());
-        });
         var productsAutocomplete = makeInputAutocomplete("Product", []);
 
         makeInputNumeric("Price");
@@ -141,20 +131,20 @@
                 contentType: "application/json; charset=utf-8",
                 data: { category: category },
                 dataType: "json",
-                success: function (data) {
+                success: function(data) {
                     if (product.Length == 0)
                         $("#Product").val("");
                     productsAutocomplete.destroy();
                     productsAutocomplete = makeInputAutocomplete("Product", data);
                 },
-                error: function () { alert('Server failure!'); }
-                });
-            }
+                error: function() { alert('Server failure!'); }
+            });
+        }
 
-            var categoryVal = $("#Category").val();
-            if (categoryVal.length > 0) {
-                updateProducts(categoryVal);
-            }
+        var categoryVal = $("#Category").val();
+        if (categoryVal.length > 0) {
+            updateProducts(categoryVal);
+        }
     </script>
 }
 

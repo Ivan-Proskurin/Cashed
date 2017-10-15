@@ -7,6 +7,8 @@ namespace Cashed.View.Models
 {
     public class ExpenseItemViewModel
     {
+        public int Id { get; set; }
+
         [Required]
         [DisplayName("Дата/время")]
         public string DateTime { get; set; }

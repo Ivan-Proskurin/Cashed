@@ -56,3 +56,29 @@ function makeInputNumeric(inputId) {
         return !isNaN(int);
     };
 }
+
+function makeInputDatetimePicker(inputId) {
+    $("#" + inputId).datetimepicker({
+        onSelectDate: function (dt) { propagateDateTimeToPicker(inputId, dt) },
+        onSelectTime: function (dt) { propagateDateTimeToPicker(inputId, dt) },
+        dayOfWeekStart: 1,
+        closeOnDateSelect: true,
+        format: "Y.m.d H:i"
+    });
+}
+
+function propagateDateTimeToPicker(inputId, dt) {
+    $("#" + inputId).val(formatDateTime(dt));
+}
+
+function formatDateTime(dt) {
+    var year = dt.getFullYear();
+    var month = dt.getMonth() + 1;
+    if (month < 10) month = "0" + month;
+    var day = dt.getDate();
+    if (day < 10) day = "0" + day;
+    var hours = dt.getHours();
+    if (hours == 0) hours = "00";
+    else if (hours < 0) hours = "0" + hours;
+    return year + "." + month + "." + day + " " + hours + ":00";
+}

@@ -7,6 +7,7 @@ using Cashed.DataAccess.Model.Expenses;
 using System.Linq;
 using System.Data.Entity;
 using Cashed.DataAccess.Model;
+using System;
 
 namespace Logic.Cashed.Logic
 {
@@ -19,11 +20,17 @@ namespace Logic.Cashed.Logic
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<List<ExpenseBillModel>> GetAll(bool includeDeleted = false)
+        public Task<List<ExpenseBillModel>> GetAll(bool includeDeleted = false)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<List<ExpenseBillModel>> GetFiltered(DateTime dateFrom, DateTime dateTo)
         {
             // отбираем нужные счета
             var expenseRepo = _unitOfWork.GetQueryRepository<ExpenseBill>();
             var bills = await expenseRepo.Query
+                .Where(x => x.DateTime >= dateFrom && x.DateTime < dateTo)
                 .Select(x => new ExpenseBillModel
                 {
                     Id = x.Id,
@@ -69,14 +76,65 @@ namespace Logic.Cashed.Logic
             return models.OrderByDescending(x => x.DateTime).ThenByDescending(x => x.Cost).ToList();
         }
 
-        public Task<ExpenseBillModel> GetById(int id)
+        public async Task<ExpenseBillModel> GetById(int id)
         {
-            throw new System.NotImplementedException();
+            var repo = _unitOfWork.GetQueryRepository<ExpenseBill>();
+            var bill = await repo.GetById(id);
+            var model = new ExpenseBillModel
+            {
+                Id = bill.Id,
+                DateTime = bill.DateTime,
+                Cost = bill.SumPrice,
+                Items = bill.Items.Select(x => new ExpenseItemModel
+                {
+                    Id = x.Id,
+                    CategoryId = x.CategoryId,
+                    DateTime = x.DateTime,
+                    Comment = x.Comment,
+                    Cost = x.Price,
+                    ProductId = x.ProductId,
+                    Quantity = x.Quantity
+                }).ToList()
+            };
+            await FullfillItemsFields(model);
+            return model;
+        }
+
+        private async Task FullfillItemsFields(ExpenseBillModel bill)
+        {
+            var catRepo = _unitOfWork.GetQueryRepository<Category>();
+            var prodRepo = _unitOfWork.GetQueryRepository<Product>();
+            foreach (var item in bill.Items)
+            {
+                var product = await prodRepo.GetById(item.ProductId);
+                item.Product = product.Name;
+                var category = await catRepo.GetById(item.CategoryId);
+                item.Category = category.Name;
+            }
         }
 
         public Task<ExpenseBillModel> GetByName(string name, bool includeDeleted = false)
         {
             throw new System.NotImplementedException();
+        }
+
+        public ExpensesTotalsModel GetTotals(List<ExpenseBillModel> bills)
+        {
+            if (bills.Count > 0)
+            {
+                var orderedBills = bills.OrderBy(x => x.DateTime).ToList();
+                var totals = new ExpensesTotalsModel
+                {
+                    Caption = $"Итог за {orderedBills.FirstOrDefault()?.DateTime: yyyy.MM.dd} - {orderedBills.LastOrDefault()?.DateTime: yyyy.MM.dd}: ",
+                    Total = bills.Sum(x => x.Cost)
+                };
+                return totals;
+            }
+            return new ExpensesTotalsModel
+            {
+                Caption = "Итог:",
+                Total = 0m
+            };
         }
     }
 }

@@ -13,6 +13,9 @@ namespace Cashed.View.Controllers
     public class ExpensesController : Controller
     {
         private static readonly string CurrentBillSessionName = "CurrentBill";
+        private static readonly string DateFormat = "yyyy.MM.dd";
+        private static readonly string DateTimeFormat = "yyyy.MM.dd HH:mm";
+        private static readonly string DateFormatToHours = "yyyy.MM.dd HH:00";
 
         private readonly IExpensesBillQueries _expensesBillQueries;
         private readonly ICategoriesQueries _categoriesQueries;
@@ -29,32 +32,80 @@ namespace Cashed.View.Controllers
             _expensesBillCommands = expensesBillCommands;
         }
 
-        // GET: Expenses
-        public async Task<ActionResult> Index()
+        private async Task<ExpensesBillsViewList> CreateExpensesBillsViewList(
+            DateTime dateFrom, DateTime dateTo)
         {
-            var models = await _expensesBillQueries.GetAll();
-            return View(new ExpensesBillsViewList()
+            var bills = await _expensesBillQueries.GetFiltered(dateFrom, dateTo);
+            var totals = _expensesBillQueries.GetTotals(bills);
+            return new ExpensesBillsViewList()
             {
-                Bills = models.Select(x => new ExpensesBillListViewModel
+                Bills = bills.Select(x => new ExpensesBillListViewModel
                 {
                     Id = x.Id,
-                    DateTime = x.DateTime.ToString("dd.MM.yyyy HH:mm"),
+                    DateTime = x.DateTime.ToString(DateTimeFormat),
                     Category = x.Category,
                     Cost = x.Cost
-                }).ToList()
-            });
+                }).ToList(),
+
+                Totals = new ExpensesTotalsViewModel
+                {
+                    Caption = totals.Caption,
+                    Total = totals.Total
+                },
+
+                Filter = new ExpensesListFilter
+                {
+                    DateFrom = dateFrom.ToString(DateTimeFormat),
+                    DateTo = dateTo.ToString(DateTimeFormat)
+                }
+            };
+        }
+
+        public async Task<ActionResult> Index()
+        {
+            var model = await CreateExpensesBillsViewList(DateTime.Today, DateTime.Today.AddDays(1));
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Index(ExpensesBillsViewList model)
+        {
+            var culture = new CultureInfo("ru-ru");
+            var dateFrom = DateTime.Today;
+            var dateTo = DateTime.Today.AddDays(1);
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    dateFrom = DateTime.ParseExact(model.Filter.DateFrom, DateTimeFormat, culture);
+                    dateTo = DateTime.ParseExact(model.Filter.DateTo, DateTimeFormat, culture);
+                    if (dateFrom >= dateTo)
+                        throw new ArgumentException("Дата До не может быть меньше или равной дате От");
+                }
+                catch (FormatException)
+                {
+                    ModelState.AddModelError(string.Empty, "Одна из введенных дат имела неверный формат");
+                }
+                catch (ArgumentException ex)
+                {
+                    ModelState.AddModelError(string.Empty, ex.Message);
+                }
+            }
+            var model2 = await CreateExpensesBillsViewList(dateFrom, dateTo);
+            return View(model2);
         }
 
         public async Task<ActionResult> Add(string datetime = null, string category = null, bool noItems = false)
         {
-            return View(await CreateExpenseItemViewModel(datetime, category, noItems));
+            return View(await CreateExpenseItemViewModel(-1, datetime, category, noItems));
         }
 
-        private async Task<ExpenseItemViewModel> CreateExpenseItemViewModel(string datetime, string category, bool noItems)
+        private async Task<ExpenseItemViewModel> CreateExpenseItemViewModel(int id, string datetime, string category, bool noItems)
         {
             var model = new ExpenseItemViewModel
             {
-                DateTime = datetime ?? DateTime.Now.ToString("yyyy.MM.dd HH:00"),
+                Id = id,
+                DateTime = datetime ?? DateTime.Now.ToString(DateFormatToHours),
                 Category = category,
                 NoItems = noItems
             };
@@ -101,7 +152,7 @@ namespace Cashed.View.Controllers
             var model = new ExpenseItemModel
             {
                 Id = -1,
-                DateTime = DateTime.ParseExact(viewModel.DateTime, "yyyy.MM.dd HH:mm", CultureInfo.InvariantCulture),
+                DateTime = DateTime.ParseExact(viewModel.DateTime, DateTimeFormat, CultureInfo.InvariantCulture),
                 CategoryId = category.Id,
                 Category = category.Name,
                 ProductId = product.Id,
@@ -137,13 +188,18 @@ namespace Cashed.View.Controllers
             return bill;
         }
 
+        private void SetCurrentBill(ExpenseBillModel bill)
+        {
+            Session[CurrentBillSessionName] = bill;
+        }
+
         public ActionResult GetSubtotal()
         {
             var culture = new CultureInfo("ru-ru");
             var bill = GetCurrentBill();
             var subtotal = new ExpenseBillViewModel
             {
-                DateTime = bill.Items.Count > 0 ? "за " + bill.DateTime.ToString("yyyy.MM.dd") : string.Empty,
+                DateTime = bill.Items.Count > 0 ? "за " + bill.DateTime.ToString(DateFormat) : string.Empty,
                 Subtotal = bill.Cost.ToString(culture),
                 Subtotals = bill.Items.Select(x => new ExpenseItemViewModel
                 {
@@ -162,10 +218,43 @@ namespace Cashed.View.Controllers
             if (bill.Items.Count == 0)
                 return RedirectToAction("Add", new { noItems = true });
 
-            await _expensesBillCommands.Create(bill);
+            if (bill.Id > 0)
+                await _expensesBillCommands.Update(bill);
+            else
+                await _expensesBillCommands.Create(bill);
+
             Session[CurrentBillSessionName] = null;
 
             return RedirectToAction("Index");
+        }
+
+        public async Task<ActionResult> Edit(int id)
+        {
+            var bill = await _expensesBillQueries.GetById(id);
+            SetCurrentBill(bill);
+            return View("Add", await CreateExpenseItemViewModel(id, null, null, false));
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Edit(ExpenseItemViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var expenseItem = await ExpenseItemViewModelToModel(model);
+                    var bill = GetCurrentBill();
+                    bill.AddItem(expenseItem);
+
+                    return RedirectToAction("Add", new { datetime = model.DateTime, category = model.Category });
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", ex.Message);
+                }
+            }
+            model.AvailCategories = await GetAllCategoriesNames();
+            return View("Add", model);
         }
     }
 }

@@ -21,9 +21,28 @@ namespace Logic.Cashed.Logic
             throw new NotImplementedException();
         }
 
-        public Task<ExpenseBillModel> Update(ExpenseBillModel model)
+        public async Task<ExpenseBillModel> Update(ExpenseBillModel model)
         {
-            throw new NotImplementedException();
+            var itemsRepo = _unitOfWork.GetCommandRepository<ExpenseItem>();
+            foreach (var item in model.Items)
+            {
+                if (item.Id > 0) continue;
+                itemsRepo.Create(new ExpenseItem
+                {
+                    Id = -1,
+                    BillId = model.Id,
+                    CategoryId = item.CategoryId,
+                    ProductId = item.ProductId,
+                    DateTime = item.DateTime,
+                    Price = item.Cost,
+                    Quantity = item.Quantity,
+                    Comment = item.Comment
+                });
+            }
+
+            await _unitOfWork.Commit();
+
+            return model;
         }
 
         public async Task Create(ExpenseBillModel model)

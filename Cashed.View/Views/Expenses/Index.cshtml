@@ -3,36 +3,78 @@
     ViewBag.Title = "Расходы";
 }
 
-<div>
-    <span class="expenses-header">Счета</span>
-@*    <span><button class="btn btn-primary btn-sm">Добавить новый</button></span>*@
-    @Html.ActionLink("Добавить новый", "Add", null, new { @class = "btn btn-primary btn-sm" })
+@Html.ValidationSummary()
+
+<div class="container">
+    <div class="row">
+        <span class="expenses-header col-sm-1">Счета</span>
+        <div class="col-md-11">
+            @using (@Html.BeginForm())
+            {
+                
+
+                <div class="form-group row">
+                    <span class="col-md-1 filter-caption">От:</span>
+                    <div id='datepicker-from' class='input-group date col-md-4'>
+                        @Html.TextBoxFor(m => m.Filter.DateFrom, new {@class = "form-control", autocomplete="off"})
+                        <span class="input-group-addon" id="date-picker-button-from">
+                            <i class="fa fa-calendar"></i>
+                        </span>
+                    </div>
+                    <span class="col-md-1 filter-caption">До:</span>
+                    <div id='datepicker-to' class='input-group date col-md-4'>
+                        @Html.TextBoxFor(m => m.Filter.DateTo, new {@class = "form-control", autocomplete="off"})
+                        <span class="input-group-addon" id="date-picker-button-to">
+                            <i class="fa fa-calendar"></i>
+                        </span>
+                    </div>
+
+                    <button type="submit" class="input-group-addon cursor-pointer" id="refresh-button">
+                        <i class="fa fa-refresh"></i>
+                    </button>
+                    
+                </div>
+            }
+        </div>
+    </div>
 </div>
 <table class="expenses-table table table-striped table-hover">
     <thead class="thead-inverse">
-        <tr>
-            <th>Дата/время</th>
-            <th>Категория</th>
-            <th>Общая сумма</th>
-        </tr>
+    <tr>
+        <th>Дата/время</th>
+        <th>Категория</th>
+        <th>Общая сумма</th>
+    </tr>
     </thead>
     <tbody>
-        @for (int i = 0; i < Model.Bills.Count; i++)
-        {
-            var bill = Model.Bills[i];
+    @for (int i = 0; i < Model.Bills.Count; i++)
+    {
+        var bill = Model.Bills[i];
 
-            <tr data-id="@bill.Id">
-                <td>@bill.DateTime</td>
-                <td>@bill.Category</td>
-                <td>@bill.Cost</td>
-            </tr>
-        }
+        <tr data-id="@bill.Id">
+            <td>@Html.ActionLink(bill.DateTime, "Edit", new { id = bill.Id }, new { @class = "edit-item-link" })</td>
+            <td>@Html.ActionLink(bill.Category, "Edit", new { id = bill.Id }, new { @class = "edit-item-link" })</td>
+            <td>@Html.ActionLink(bill.Cost.ToString(), "Edit", new { id = bill.Id }, new { @class = "edit-item-link" })</td>
+        </tr>
+    }
     </tbody>
+    <tfoot>
+    <tr class="table-dark">
+        <td colspan="2" class="expenses-totals-caption">@Model.Totals.Caption</td>
+        <td>@Model.Totals.Total</td>
+    </tr>
+    </tfoot>
 </table>
+@Html.ActionLink("Добавить новый", "Add", null, new { @class = "btn btn-primary" })
+
 
 @section Scripts
 {
     <script type="text/javascript">
         activateLink("#expensesLink");
+
+        makeInputDatetimePicker("Filter_DateFrom");
+        makeInputDatetimePicker("Filter_DateTo");
+
     </script>
 }
