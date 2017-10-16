@@ -40,6 +40,13 @@ namespace Logic.Cashed.Logic
                 });
             }
 
+            _unitOfWork.UpdateModel(new ExpenseBill
+            {
+                Id = model.Id,
+                DateTime = model.DateTime,
+                SumPrice = model.Cost
+            });
+
             await _unitOfWork.Commit();
 
             return model;

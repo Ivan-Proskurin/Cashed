@@ -40,40 +40,39 @@ namespace Logic.Cashed.Logic
                 .ToListAsync();
             var billIds = bills.Select(x => x.Id).ToList();
 
-            // распределяем счет на самые увестистые категории расходов и группируем по ним
             var itemsRepo = _unitOfWork.GetQueryRepository<ExpenseItem>();
 
-            var groupByCategoryQuery =
+            // ищем категории, входящие в счет
+            var categoriesRepo = _unitOfWork.GetQueryRepository<Category>();
+            var billCategoriesQuery =
                 from itm in itemsRepo.Query
+                join cat in categoriesRepo.Query on itm.CategoryId equals cat.Id
                 where billIds.Contains(itm.BillId)
-                group itm.Price by new { itm.BillId, itm.CategoryId }
-                into itmGroup
+                group cat.Name by itm.BillId
+                into catGroup
                 select new
                 {
-                    BillId = itmGroup.Key.BillId,
-                    CategoryId = itmGroup.Key.CategoryId,
-                    Total = itmGroup.Sum()
+                    BillId = catGroup.Key,
+                    CategoryNames = catGroup.Distinct().ToList()
                 };
-            var groupByCategory = await groupByCategoryQuery
-                .OrderByDescending(x => x.Total).ToListAsync();
+            var catNames = await billCategoriesQuery.ToListAsync();
+            var catDict = catNames.ToDictionary(x => x.BillId, x => x.CategoryNames);
 
-            var categoriesRepo = _unitOfWork.GetQueryRepository<Category>();
-            var models = new List<ExpenseBillModel>();
-            foreach (var billCategory in groupByCategory)
+            // присваиваем каждому счету свой список вошедших в него категорий
+            foreach (var bill in bills)
             {
-                var category = await categoriesRepo.GetById(billCategory.CategoryId);
-
-                var bill = new ExpenseBillModel()
+                if (catDict.TryGetValue(bill.Id, out var billCats))
                 {
-                    Id = billCategory.BillId,
-                    DateTime = bills.First(x => x.Id == billCategory.BillId).DateTime,
-                    Cost = billCategory.Total,
-                    Category = category.Name
-                };
-                models.Add(bill);
+                    var firstTwo = billCats.Take(2);
+                    bill.Category = string.Join(", ", firstTwo);
+                    if (billCats.Count > 2)
+                    {
+                        bill.Category += $"... ({billCats.Count})";
+                    }
+                }
             }
 
-            return models.OrderByDescending(x => x.DateTime).ThenByDescending(x => x.Cost).ToList();
+            return bills.OrderByDescending(x => x.DateTime).ThenByDescending(x => x.Cost).ToList();
         }
 
         public async Task<ExpenseBillModel> GetById(int id)

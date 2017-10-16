@@ -92,8 +92,10 @@ namespace Cashed.View.Controllers
             return View(model2);
         }
 
-        public async Task<ActionResult> Add(string datetime = null, string category = null, bool noItems = false)
+        public async Task<ActionResult> Add(string datetime = null, string category = null, 
+            bool noItems = false, bool newBill = true)
         {
+            if (newBill) SetCurrentBill(null);
             return View(await CreateExpenseItemViewModel(-1, datetime, category, noItems));
         }
 
@@ -126,20 +128,15 @@ namespace Cashed.View.Controllers
                     var expenseItem = await ExpenseItemViewModelToModel(model);
                     var bill = GetCurrentBill();
                     bill.AddItem(expenseItem);
+                    return RedirectToAction("Add", new {datetime = model.DateTime, category = model.Category, newBill = false});
                 }
                 catch (Exception ex)
                 {
                     ModelState.AddModelError("", ex.Message);
-                    model.AvailCategories = await GetAllCategoriesNames();
-                    return View(model);
                 }
-                return RedirectToAction("Add", new { datetime = model.DateTime, category = model.Category });
             }
-            else
-            {
-                model.AvailCategories = await GetAllCategoriesNames();
-                return View(model);
-            }
+            model.AvailCategories = await GetAllCategoriesNames();
+            return View(model);
         }
 
         private async Task<ExpenseItemModel> ExpenseItemViewModelToModel(ExpenseItemViewModel viewModel)
@@ -242,7 +239,7 @@ namespace Cashed.View.Controllers
                     var bill = GetCurrentBill();
                     bill.AddItem(expenseItem);
 
-                    return RedirectToAction("Add", new { datetime = model.DateTime, category = model.Category });
+                    return RedirectToAction("Add", new { datetime = model.DateTime, category = model.Category, newBill = false });
                 }
                 catch (Exception ex)
                 {
