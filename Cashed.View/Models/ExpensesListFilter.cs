@@ -1,12 +1,21 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
 
 namespace Cashed.View.Models
 {
     public class ExpensesListFilter
     {
-        [Required]
-        public string DateFrom { get; set; }
-        [Required]
-        public string DateTo { get; set; }
+        public DateTime DateFrom { get; set; }
+        public DateTime DateTo { get; set; }
+
+        public ExpensesListFilter()
+        {
+            
+        }
+
+        public ExpensesListFilter(DateTime dateFrom, DateTime dateTo)
+        {
+            DateFrom = dateFrom;
+            DateTo = dateTo;
+        }
     }
 }

@@ -55,10 +55,11 @@
     <Compile Include="IUserSettings.cs" />
     <Compile Include="Models\CategoryList.cs" />
     <Compile Include="Models\CategoryModel.cs" />
+    <Compile Include="Models\ExpenseBillsList.cs" />
     <Compile Include="Models\ExpenseItemModel.cs" />
     <Compile Include="Models\ExpenseBillModel.cs" />
     <Compile Include="Models\TotalsInfoModel.cs" />
-    <Compile Include="Models\GetModelListArgs.cs" />
+    <Compile Include="Models\PaginationArgs.cs" />
     <Compile Include="Models\IncomeItemModel.cs" />
     <Compile Include="Models\IncomeTypeModel.cs" />
     <Compile Include="Models\PaginationInfo.cs" />

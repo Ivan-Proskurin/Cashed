@@ -25,12 +25,20 @@ namespace Logic.Cashed.Logic
             throw new NotImplementedException();
         }
 
-        public async Task<List<ExpenseBillModel>> GetFiltered(DateTime dateFrom, DateTime dateTo)
+        public async Task<ExpenseBillsList> GetFiltered(DateTime dateFrom, DateTime dateTo, PaginationArgs args)
         {
+            var billsList = new ExpenseBillsList();
+
             // отбираем нужные счета
             var expenseRepo = _unitOfWork.GetQueryRepository<ExpenseBill>();
-            var bills = await expenseRepo.Query
-                .Where(x => x.DateTime >= dateFrom && x.DateTime < dateTo)
+            var billsQuery = expenseRepo.Query
+                .Where(x => x.DateTime >= dateFrom && x.DateTime < dateTo);
+            var totalCount = billsQuery.Count();
+            var pagination = PaginationInfo.FromArgs(args, totalCount);
+            var bills = await billsQuery
+                .OrderByDescending(x => x.DateTime)
+                .ThenByDescending(x => x.SumPrice)
+                .Skip(pagination.Skipped).Take(pagination.Taken)
                 .Select(x => new ExpenseBillModel
                 {
                     Id = x.Id,
@@ -72,7 +80,9 @@ namespace Logic.Cashed.Logic
                 }
             }
 
-            return bills.OrderByDescending(x => x.DateTime).ThenByDescending(x => x.Cost).ToList();
+            billsList.List = bills;
+            billsList.Pagination = pagination;
+            return billsList;
         }
 
         public async Task<ExpenseBillModel> GetById(int id)

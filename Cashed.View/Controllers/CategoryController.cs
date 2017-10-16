@@ -27,7 +27,7 @@ namespace Cashed.View.Controllers
         {
             var viewModel = new CategoryListViewModel
             {
-                List = await _categoriesQueries.GetList(new GetModelListArgs
+                List = await _categoriesQueries.GetList(new PaginationArgs
                 {
                     ItemsPerPage = _userSettings.ItemsPerPage,
                     PageNumber = page,
@@ -59,7 +59,7 @@ namespace Cashed.View.Controllers
             {
                 ModelState.AddModelError(string.Empty, ex.Message);
             }
-            model.List = await _categoriesQueries.GetList(new GetModelListArgs
+            model.List = await _categoriesQueries.GetList(new PaginationArgs
             {
                 ItemsPerPage = _userSettings.ItemsPerPage,
                 PageNumber = 1,

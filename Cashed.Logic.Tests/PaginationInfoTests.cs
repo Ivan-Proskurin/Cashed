@@ -9,7 +9,7 @@ namespace Cashed.Logic.Tests
         [TestMethod]
         public void FromArgs_FirstPage10TotalItems_ReturnsRightTotalPagesCount()
         {
-            var args = new GetModelListArgs
+            var args = new PaginationArgs
             {
                 PageNumber = 1,
                 ItemsPerPage = 5,
@@ -27,7 +27,7 @@ namespace Cashed.Logic.Tests
         [TestMethod]
         public void FromArgs_FirstPageZeroTotalItems_ReturnsRightTotalPagesCount()
         {
-            var args = new GetModelListArgs
+            var args = new PaginationArgs
             {
                 PageNumber = 1,
                 ItemsPerPage = 5,
@@ -45,7 +45,7 @@ namespace Cashed.Logic.Tests
         [TestMethod]
         public void FromArgs_FirstPage9TotalItems_ReturnsRightTotalPagesCount()
         {
-            var args = new GetModelListArgs
+            var args = new PaginationArgs
             {
                 PageNumber = 2,
                 ItemsPerPage = 5,
@@ -63,7 +63,7 @@ namespace Cashed.Logic.Tests
         [TestMethod]
         public void FromArgs_LastPageTotalItems_ReturnsRightPageNumber()
         {
-            var args = new GetModelListArgs
+            var args = new PaginationArgs
             {
                 PageNumber = -1,
                 ItemsPerPage = 5,

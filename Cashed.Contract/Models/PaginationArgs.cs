@@ -1,6 +1,6 @@
 ﻿namespace Logic.Cashed.Contract.Models
 {
-    public class GetModelListArgs
+    public class PaginationArgs
     {
         public bool IncludeDeleted { get; set; }
         public int PageNumber { get; set; }

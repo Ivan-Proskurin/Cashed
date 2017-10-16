@@ -10,7 +10,7 @@ namespace Logic.Cashed.Contract.Models
         public int Skipped { get; set; }
         public int Taken { get; set; }
 
-        public static PaginationInfo FromArgs(GetModelListArgs args, int totalItemsCount)
+        public static PaginationInfo FromArgs(PaginationArgs args, int totalItemsCount)
         {
             if (args.ItemsPerPage == 0)
                 throw new ArgumentException("Количество записей на страницу должно быть больше нуля", "ItemsPerPage");

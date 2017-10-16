@@ -255,6 +255,7 @@
     <Compile Include="Models\ExpensesBillsViewList.cs" />
     <Compile Include="Models\ExpenseItemViewModel.cs" />
     <Compile Include="Models\ExpensesListFilter.cs" />
+    <Compile Include="Models\ExpensesListFilterViewModel.cs" />
     <Compile Include="Models\ExpensesTotalsViewModel.cs" />
     <Compile Include="Models\IncomesListFilter.cs" />
     <Compile Include="Models\IncomeTypesListViewModel.cs" />
@@ -290,6 +291,7 @@
     <Content Include="Views\Incomes\AddIncomeType.cshtml" />
     <Content Include="Views\Incomes\EditIncomeType.cshtml" />
     <Content Include="Views\Incomes\AddIncome.cshtml" />
+    <Content Include="Views\Shared\_Pagination.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

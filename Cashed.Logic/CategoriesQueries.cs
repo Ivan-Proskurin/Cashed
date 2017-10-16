@@ -77,7 +77,7 @@ namespace Logic.Cashed.Logic
             return products;
         }
 
-        public async Task<CategoryList> GetList(GetModelListArgs args)
+        public async Task<CategoryList> GetList(PaginationArgs args)
         {
             var repo = _unitOfWork.GetQueryRepository<Category>();
             var query = args.IncludeDeleted ? repo.Query : repo.Query.Where(x => !x.IsDeleted);

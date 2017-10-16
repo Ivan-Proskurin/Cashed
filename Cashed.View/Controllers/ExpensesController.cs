@@ -14,30 +14,38 @@ namespace Cashed.View.Controllers
     public class ExpensesController : Controller
     {
         private static readonly string CurrentBillSessionName = "CurrentBill";
+        private static readonly string CurrentFilterSessionName = "CurrentFilter";
 
         private readonly IExpensesBillQueries _expensesBillQueries;
         private readonly ICategoriesQueries _categoriesQueries;
         private readonly IProductQueries _productQueries;
         private readonly IExpensesBillCommands _expensesBillCommands;
+        private readonly IUserSettings _userSettings;
 
         public ExpensesController(IExpensesBillQueries expensesBillQueries,
             ICategoriesQueries categoriesQueries, IProductQueries productQueries,
-            IExpensesBillCommands expensesBillCommands)
+            IExpensesBillCommands expensesBillCommands, IUserSettings userSettings)
         {
             _expensesBillQueries = expensesBillQueries;
             _categoriesQueries = categoriesQueries;
             _productQueries = productQueries;
             _expensesBillCommands = expensesBillCommands;
+            _userSettings = userSettings;
         }
 
         private async Task<ExpensesBillsViewList> CreateExpensesBillsViewList(
-            DateTime dateFrom, DateTime dateTo)
+            ExpensesListFilter filter, int page = 1)
         {
-            var bills = await _expensesBillQueries.GetFiltered(dateFrom, dateTo);
-            var totals = _expensesBillQueries.GetTotals(bills);
-            return new ExpensesBillsViewList()
+            var args = new PaginationArgs
             {
-                Bills = bills.Select(x => new ExpensesBillListViewModel
+                PageNumber = page,
+                ItemsPerPage = _userSettings.ItemsPerPage
+            };
+            var bills = await _expensesBillQueries.GetFiltered(filter.DateFrom, filter.DateTo, args);
+            var totals = _expensesBillQueries.GetTotals(bills.List);
+            return new ExpensesBillsViewList
+            {
+                Bills = bills.List.Select(x => new ExpensesBillListViewModel
                 {
                     Id = x.Id,
                     DateTime = x.DateTime.ToStandardString(),
@@ -51,17 +59,35 @@ namespace Cashed.View.Controllers
                     Total = totals.Total
                 },
 
-                Filter = new ExpensesListFilter
+                Filter = new ExpensesListFilterViewModel
                 {
-                    DateFrom = dateFrom.ToStandardString(),
-                    DateTo = dateTo.ToStandardString()
-                }
+                    DateFrom = filter.DateFrom.ToStandardString(),
+                    DateTo = filter.DateTo.ToStandardString()
+                },
+
+                Pagination = bills.Pagination
             };
         }
 
-        public async Task<ActionResult> Index()
+        private ExpensesListFilter GetCurrentFilter()
         {
-            var model = await CreateExpensesBillsViewList(DateTime.Today, DateTime.Today.AddDays(1));
+            return Session[CurrentFilterSessionName] as ExpensesListFilter;
+        }
+
+        private void SetCurrentFilter(ExpensesListFilter filter)
+        {
+            Session[CurrentFilterSessionName] = filter;
+        }
+
+        public async Task<ActionResult> Index(int page = 1)
+        {
+            var filter = GetCurrentFilter();
+            if (filter == null)
+            {
+                filter = new ExpensesListFilter(DateTime.Today, DateTime.Today.AddDays(1));
+                SetCurrentFilter(filter);
+            }
+            var model = await CreateExpensesBillsViewList(filter, page);
             return View(model);
         }
 
@@ -88,7 +114,9 @@ namespace Cashed.View.Controllers
                     ModelState.AddModelError(string.Empty, ex.Message);
                 }
             }
-            var model2 = await CreateExpensesBillsViewList(dateFrom, dateTo);
+            var filter = new ExpensesListFilter(dateFrom, dateTo);
+            SetCurrentFilter(filter);
+            var model2 = await CreateExpensesBillsViewList(filter);
             return View(model2);
         }
 
@@ -225,7 +253,7 @@ namespace Cashed.View.Controllers
         {
             var bill = await _expensesBillQueries.GetById(id);
             SetCurrentBill(bill);
-            return View("Add", await CreateExpenseItemViewModel(id, null, null, false));
+            return View("Add", await CreateExpenseItemViewModel(id, bill.DateTime.ToStandardString(), null, false));
         }
 
         [HttpPost]
