@@ -106,6 +106,8 @@
 
         makeInputAutocomplete("Category", null, categorySelected, "col-md-7 awesomplete-padding-fix");
 
+        var checkboxedTable = new CheckboxedTable(productsCheckboxChanged);
+
         function categorySelected() {
             $("#select-cat-msg").attr("hidden", "hidden");
             $("#products-table").removeAttr("hidden");
@@ -123,6 +125,7 @@
         }
 
         function updateProducts(products) {
+            checkboxedTable.hideCheckboxes();
             var table = $("#Products");
             table.empty();
             for (var i = 0; i < products.length; i++) {
@@ -132,11 +135,10 @@
         }
 
         function addProductToTable(table, product) {
-            hideCheckboxes();
             $('<tr>').addClass("data-row")
                 .attr("data-id", product.Id)
                 .append($("<td>").addClass("checkbox-cell").attr("hidden", "hidden")
-                    .append($("<input>").attr("type", "checkbox").addClass("product-checkbox")
+                    .append($("<input>").attr("type", "checkbox").addClass("item-checkbox")
                         .attr("data-id", product.Id).change(productsCheckboxChanged)))
                 .append($('<td>').html(
                     product.Id
@@ -169,6 +171,7 @@
                 success: function(data) {
                     if (data.Status) {
                         $("#product-exists").attr("hidden", "hidden");
+                        checkboxedTable.hideCheckboxes();
                         addProductToTable($("#Products"), data.Model);
                         $("#Product").val("");
                         updateShowcheboxesVisibility();
@@ -181,38 +184,11 @@
             });
         }
 
-        $(".showcheckboxes").click(showCheckboxes);
-        $(".hidecheckboxes").click(hideCheckboxes);
-        $(".toggle-all-chechboxes").change(toggleAllCheckboxes);
         $("#deleteOnlyMarkButton").click(function() { deleteProducts(true); });
         $("#deleteFullButton").click(function() { deleteProducts(false); });
 
-
-        function showCheckboxes() {
-            $(".checkbox-cell").removeAttr("hidden");
-            $(".hidecheckboxes").removeAttr("hidden");
-            $(".showcheckboxes").attr("hidden", "hidden");
-        }
-
-        function hideCheckboxes() {
-            $("input[type=checkbox]").prop("checked", false);
-            productsCheckboxChanged();
-            $(".checkbox-cell").attr("hidden", "hidden");
-            $(".showcheckboxes").removeAttr("hidden");
-            $(".hidecheckboxes").attr("hidden", "hidden");
-        }
-
-        function toggleAllCheckboxes() {
-            if ($(".toggle-all-chechboxes:checked").length) {
-                $(".product-checkbox").prop("checked", true);
-            } else {
-                $(".product-checkbox").prop("checked", false);
-            }
-            productsCheckboxChanged();
-        }
-
         function productsCheckboxChanged() {
-            if ($(".product-checkbox:checked").length)
+            if (checkboxedTable.getSelectedCount() > 0)
                 $(".delete-button").removeAttr("hidden");
             else
                 $(".delete-button").attr("hidden", "hidden");
@@ -220,15 +196,9 @@
 
         function updateShowcheboxesVisibility() {
             if ($(".data-row").length) {
-                if ($(".hidecheckboxes").attr("hidden").length > 0)
-                    $(".showcheckboxes").removeAttr("hidden");
+                checkboxedTable.hideCheckboxes();
             } else {
-                $("input[type=checkbox]").prop("checked", false);
-                productsCheckboxChanged();
-                $(".checkbox-cell").attr("hidden", "hidden");
-                $(".showcheckboxes").attr("hidden", "hidden")
-                $(".hidecheckboxes").attr("hidden", "hidden");
-                $(".showcheckboxes").attr("hidden", "hidden");
+                checkboxedTable.hideControls();
             }
         }
 
@@ -247,7 +217,7 @@
         }
 
         function getDeleteIdList() {
-            var chk = $(".product-checkbox:checked");
+            var chk = checkboxedTable.getSelectedCheckboxes();
             var ids = chk.map(function (index, item) {
                 return +$(item).attr("data-id");
             });
@@ -261,7 +231,6 @@
         function deleteRows(ids) {
             for (var i = 0; i < ids.length; i++) {
                 var tr = $("tr[data-id=" + ids[i] + "]");
-                console.log(tr);
                 tr.remove();
             }
             productsCheckboxChanged();

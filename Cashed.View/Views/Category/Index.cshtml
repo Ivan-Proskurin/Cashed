@@ -32,7 +32,7 @@
     {
         <tr data-id="@Model.List.List[i].Id">
             <td class="checkbox-cell" hidden>
-                <input type="checkbox" class="category-checkbox" data-id="@Model.List.List[i].Id"/>
+                <input type="checkbox" class="item-checkbox" data-id="@Model.List.List[i].Id"/>
             </td>
             <td>@Model.List.List[i].Id</td>
             <td>
@@ -95,42 +95,16 @@
 @section Scripts
 {
     <script type="text/javascript">
-        $(document).ready(function() {
-            activateLink("#categoriesLink");
+        activateLink("#categoriesLink");
 
-            $(".showcheckboxes").click(showCheckboxes);
-            $(".hidecheckboxes").click(hideCheckboxes);
-            $(".toggle-all-chechboxes").change(toggleAllCheckboxes);
-            $(".category-checkbox").change(categoryCheckboxChanged);
-            $("#deleteOnlyMarkButton").click(function() { deleteCategories(true); });
-            $("#deleteFullButton").click(function() { deleteCategories(false); });
-        });
+        var checkboxedTable = new CheckboxedTable(categoryCheckboxChanged);
 
-        function showCheckboxes() {
-            $(".checkbox-cell").removeAttr("hidden");
-            $(".hidecheckboxes").removeAttr("hidden");
-            $(".showcheckboxes").attr("hidden", "hidden");
-        }
-
-        function hideCheckboxes() {
-            $("input[type=checkbox]").prop("checked", false);
-            categoryCheckboxChanged();
-            $(".checkbox-cell").attr("hidden", "hidden");
-            $(".showcheckboxes").removeAttr("hidden");
-            $(".hidecheckboxes").attr("hidden", "hidden");
-        }
-
-        function toggleAllCheckboxes(event) {
-            if ($(".toggle-all-chechboxes:checked").length) {
-                $(".category-checkbox").prop("checked", true);
-            } else {
-                $(".category-checkbox").prop("checked", false);
-            }
-            categoryCheckboxChanged();
-        }
+        $(".item-checkbox").change(categoryCheckboxChanged);
+        $("#deleteOnlyMarkButton").click(function() { deleteCategories(true); });
+        $("#deleteFullButton").click(function() { deleteCategories(false); });
 
         function categoryCheckboxChanged() {
-            if ($(".category-checkbox:checked").length)
+            if (checkboxedTable.getSelectedCount() > 0)
                 $(".delete-button").removeAttr("hidden");
             else
                 $(".delete-button").attr("hidden", "hidden");
@@ -152,7 +126,7 @@
         }
 
         function getDeleteIdList() {
-            var chk = $(".category-checkbox:checked");
+            var chk = checkboxedTable.getSelectedCheckboxes();
             var ids = chk.map(function(index, item) {
                 return +$(item).attr("data-id");
             });
@@ -162,54 +136,6 @@
             }
             return idList;
         }
-
-        //function deleteRows(ids) {
-        //    for (var i = 0; i < ids.length; i++) {
-        //        var tr = $("tr[data-id=" + ids[i] + "]");
-        //        console.log(tr);
-        //        tr.remove();
-        //    }
-        //    categoryCheckboxChanged();
-        //}
-
-        //function addCategoryToTable(table, model) {
-        //    hideCheckboxes();
-        //    $('<tr>').addClass("data-row")
-        //        .attr("data-id", model.Id)
-        //        .append($("<td>").addClass("checkbox-cell").attr("hidden", "hidden")
-        //            .append($("<input>").attr("type", "checkbox").addClass("category-checkbox")
-        //                .attr("data-id", model.Id).change(categoryCheckboxChanged)))
-        //        .append($('<td>').html(
-        //            model.Id
-        //        ))
-        //        .append($('<td>')
-        //            .append($("<a>").attr("href", "/Category/Edit?id=" + model.Id).addClass("edit-item-link").html(model.Name)))
-        //        .append($('<td>')
-        //            .append($("<a>").attr("href", "/Products/Index?categoryName=" + model.Name).addClass("edit-item-link").html(model.ProductCount)))
-        //        .appendTo(table);
-        //}
-
-        @*function addCategory(catName) {
-            $.ajax({
-                type: "GET",
-                url: '@Url.Action("AddCategory", "Category")',
-                contentType: "application/json; charset=utf-8",
-                data: { categoryName: catName },
-                dataType: "json",
-                success: function(data) {
-                    if (data.Status) {
-                        $("#cat-exists").attr("hidden", "hidden");
-                        addCategoryToTable($("#cat-table-body"), data.Model);
-                        $("#Category").val("");
-                        //updateShowcheboxesVisibility();
-                    } else {
-                        $("#cat-exists").removeAttr("hidden");
-                        $("#cat-exists").html(data.Message);
-                    }
-                },
-                error: function() { alert('Server failure!'); }
-            });
-        }*@
 
     </script>
 

@@ -29,7 +29,8 @@ namespace Cashed.View
                 "~/Content/font-awesome.css"));
 
             bundles.Add(new ScriptBundle("~/bundles/scripts").Include(
-                "~/Scripts/helpers.js"));
+                "~/Scripts/helpers.js",
+                "~/Scripts/checkboxed-table.js"));
         }
     }
 }
