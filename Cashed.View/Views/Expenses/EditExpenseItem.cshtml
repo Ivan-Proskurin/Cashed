@@ -1,0 +1,123 @@
+﻿@model Cashed.View.Models.ExpenseItemViewModel
+
+@{
+    ViewBag.Title = "Расходы";
+}
+
+<div class="centered-form">
+    <h3>Редактирование пункта расходов</h3>
+    <br />
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+
+        @Html.HiddenFor(m => m.Id)
+
+        <div class="form-group row">
+            @Html.LabelFor(m => m.DateTime, new { @class = "col-form-label col-md-3" })
+            <div id="datepicker" class="input-group date col-md-9">
+                @Html.TextBoxFor(m => m.DateTime, new { @class = "form-control", autocomplete = "off" })
+                <span class="input-group-addon" id="date-picker-button">
+                    <i class="fa fa-calendar"></i>
+                </span>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-9">
+                        @Html.ValidationMessageFor(m => m.DateTime)
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            @Html.LabelFor(m => m.Category, new { @class = "col-form-label col-md-3" })
+            @Html.TextBoxFor(m => m.Category, new { @class = "form-control", list = "categoryList", autocomplete = "off" })
+            <datalist id="categoryList">
+                @foreach (var category in Model.AvailCategories)
+                {
+                    <option>@category</option>
+                }
+            </datalist>
+            <div class="container validation-message-in-container">
+                <div class="row">
+                    <div class="col col-md-3"></div>
+                    <div class="col col-md-9">
+                        @Html.ValidationMessageFor(m => m.Category)
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            @Html.LabelFor(m => m.Product, new { @class = "col-form-label col-md-3" })
+            @Html.TextBoxFor(m => m.Product, new { @class = "form-control", autocomplete = "off" })
+            <div class="container validation-message-in-container">
+                <div class="row">
+                    <div class="col col-md-3"></div>
+                    <div class="col col-md-9">
+                        @Html.ValidationMessageFor(m => m.Product)
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            @Html.LabelFor(m => m.Price, new { @class = "col-form-label col-md-3" })
+            <div class="col-md-3">
+                @Html.TextBoxFor(m => m.Price, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.Price)
+            </div>
+            @Html.LabelFor(m => m.Quantity, new { @class = "col-form-label col-md-3" })
+            <div class="col-md-3">
+                @Html.TextBoxFor(m => m.Quantity, new {@class = "form-control"})
+            </div>
+        </div>
+        <div class="form-group row">
+            @Html.LabelFor(m => m.Comment, new { @class = "col-form-label col-md-3" })
+            <div class="col-md-9">
+                @Html.TextBoxFor(m => m.Comment, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="bottom-buttons-row">
+            <input type="submit" class="btn btn-outline-primary cursor-pointer" value="Сохранить" />
+            @Html.ActionLink("Отмена", "CancelEditExpenseItem", null, new { @class = "btn btn-outline-danger" })
+        </div>
+    }
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+        activateLink("#expensesLink");
+
+        makeInputDatetimePicker("DateTime");
+        makeInputAutocomplete("Category", null, categorySelected);
+        var productsAutocomplete = makeInputAutocomplete("Product", []);
+
+        function categorySelected() {
+            updateProducts($("#Category").val(), "");
+        }
+
+        function updateProducts(category, selectedProduct) {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetCategoryProducts", "Expenses")',
+                contentType: "application/json; charset=utf-8",
+                data: { category: category },
+                dataType: "json",
+                success: function (data) {
+                    productsAutocomplete.destroy();
+                    productsAutocomplete = makeInputAutocomplete("Product", data);
+                    $("#Product").val(selectedProduct);
+                },
+                error: function () { alert('Server failure!'); }
+            });
+        }
+
+        var categoryVal = "@Model.Category";
+        if (categoryVal.length > 0) {
+            updateProducts(categoryVal, "@Model.Product");
+        }
+    </script>
+}
+

@@ -293,6 +293,8 @@
     <Content Include="Views\Incomes\EditIncomeType.cshtml" />
     <Content Include="Views\Incomes\AddIncome.cshtml" />
     <Content Include="Views\Shared\_Pagination.cshtml" />
+    <Content Include="Views\Expenses\EditItems.cshtml" />
+    <Content Include="Views\Expenses\EditExpenseItem.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

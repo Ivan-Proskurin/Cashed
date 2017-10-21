@@ -3,51 +3,54 @@
     ViewBag.Title = "Продукт";
 }
 
-<h2>Редактирование продукта</h2>
-<br />
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-    @Html.ValidationSummary(true)
+<div class="centered-form">
+    <h3>Редактирование продукта</h3>
+    <br />
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
 
-    @Html.HiddenFor(x => x.CategoryId)
+        @Html.HiddenFor(x => x.CategoryId)
 
-    <div class="form-group row">
-        @Html.LabelFor(m => m.Id, null, new { @class = "col-form-label col-md-2" })
-        @Html.TextBoxFor(m => m.Id, null, new { @class = "form-control col-md-10", @disabled = "disabled" })
-    </div>
-    <div class="form-group row">
-        @Html.LabelFor(x => x.CategoryName, null, new { @class = "col-form-label col-md-2" })
-        @Html.TextBoxFor(m => m.CategoryName, new { @class = "form-control", list = "categoryList" })
-        @Html.ValidationMessageFor(m => m.CategoryName)
-        <datalist id="categoryList">
-            @foreach (var category in Model.Categories)
-            {
-                <option>@category.Name</option>
-            }
-        </datalist>
-    </div>
-    <div class="form-group row">
-        @Html.LabelFor(m => m.Name, null, new { @class = "col-form-label col-md-2" })
-        @Html.TextBoxFor(m => m.Name, null, new { @class = "form-control col-md-10" })
-    </div>
-    <div class="container validation-message-in-container">
-        <div class="row">
-            <div class="col-md-2"></div>
-            <div class="col-md-10 zero-paddings">
-                @Html.ValidationMessageFor(m => m.Name, null)
+        <div class="form-group row">
+            @Html.LabelFor(m => m.Id, null, new { @class = "col-form-label col-md-2" })
+            @Html.TextBoxFor(m => m.Id, null, new { @class = "form-control col-md-10", @disabled = "disabled" })
+        </div>
+        <div class="form-group row">
+            @Html.LabelFor(x => x.CategoryName, null, new { @class = "col-form-label col-md-2" })
+            @Html.TextBoxFor(m => m.CategoryName, new { @class = "form-control", list = "categoryList" })
+            @Html.ValidationMessageFor(m => m.CategoryName)
+            <datalist id="categoryList">
+                @foreach (var category in Model.Categories)
+                {
+                    <option>@category.Name</option>
+                }
+            </datalist>
+        </div>
+        <div class="form-group row">
+            @Html.LabelFor(m => m.Name, null, new { @class = "col-form-label col-md-2" })
+            @Html.TextBoxFor(m => m.Name, null, new { @class = "form-control col-md-10" })
+        </div>
+        <div class="container validation-message-in-container">
+            <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col-md-10 zero-paddings">
+                    @Html.ValidationMessageFor(m => m.Name, null)
+                </div>
             </div>
         </div>
-    </div>
-    <div class="bottom-buttons-row">
-        <button type="submit" class="btn btn-outline-primary btn-sm">Сохранить</button>
-        @Html.ActionLink("Отмена", "Index", "Products", null, new
-        {
-            id = "productsLink",
-            @class = "btn btn-outline-danger btn-sm"
-        })
-    </div>
-}
+
+        <div class="bottom-buttons-row">
+            <button type="submit" class="btn btn-outline-primary cursor-pointer">Сохранить</button>
+            @Html.ActionLink("Отмена", "Index", "Products", null, new
+            {
+                id = "productsLink",
+                @class = "btn btn-outline-danger"
+            })
+        </div>
+    }
+</div>
 
 @section Scripts {
     

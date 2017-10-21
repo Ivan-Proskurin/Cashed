@@ -11,13 +11,16 @@ else
 {
     <h3 class="form-caption-bg">Редактирование счета</h3>
 }
+
 @Html.ValidationSummary(true)
+
 @if (Model.NoItems)
 {
     <div class="validation-summary-errors no-items-message validation-string">
         Добавьте хотя бы одну покупку, чтобы создать чек!
     </div>
 }
+
 <div class="container">
     <div class="row">
         <div class="col">
@@ -101,6 +104,14 @@ else
             @Html.Action("GetSubtotal")
         </div>
     </div>
+    <div class="row">
+        <div class="col">
+            @Html.ActionLink("Отмена", "Index", null, new { @class = "btn btn-outline-danger btn-sm" })
+        </div>
+        <div class="col" style="text-align: right;">
+            @Html.ActionLink("Редактировать пункты", "EditItems", null, new { @class = "btn btn-outline-primary btn-sm" })
+        </div>
+    </div>
 </div>
 
 @section Scripts
@@ -114,19 +125,17 @@ else
 
         });
 
-        makeInputAutocomplete("Category",
-            null,
-            function() {
-                updateProducts($("#Category").val());
-            });
+        makeInputAutocomplete("Category", null, categorySelected);
         var productsAutocomplete = makeInputAutocomplete("Product", []);
 
         makeInputNumeric("Price");
         makeInputNumeric("Quantity");
 
-        var product = "@Model.Product";
+        function categorySelected() {
+            updateProducts($("#Category").val(), "");
+        }
 
-        function updateProducts(category) {
+        function updateProducts(category, selectedProduct) {
             $.ajax({
                 type: "GET",
                 url: '@Url.Action("GetCategoryProducts", "Expenses")',
@@ -134,18 +143,17 @@ else
                 data: { category: category },
                 dataType: "json",
                 success: function(data) {
-                    if (product.Length == 0)
-                        $("#Product").val("");
                     productsAutocomplete.destroy();
                     productsAutocomplete = makeInputAutocomplete("Product", data);
+                    $("#Product").val(selectedProduct);
                 },
                 error: function() { alert('Server failure!'); }
             });
         }
 
-        var categoryVal = $("#Category").val();
+        var categoryVal = "@Model.Category";
         if (categoryVal.length > 0) {
-            updateProducts(categoryVal);
+            updateProducts(categoryVal, "@Model.Product");
         }
     </script>
 }

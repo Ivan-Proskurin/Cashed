@@ -26,18 +26,31 @@ namespace Logic.Cashed.Logic
             var itemsRepo = _unitOfWork.GetCommandRepository<ExpenseItem>();
             foreach (var item in model.Items)
             {
-                if (item.Id > 0) continue;
-                itemsRepo.Create(new ExpenseItem
+                if (item.Id > 0 && !item.IsModified && !item.IsDeleted) continue;
+                if (item.Id < 0 || item.IsModified)
                 {
-                    Id = -1,
-                    BillId = model.Id,
-                    CategoryId = item.CategoryId,
-                    ProductId = item.ProductId,
-                    DateTime = item.DateTime,
-                    Price = item.Cost,
-                    Quantity = item.Quantity,
-                    Comment = item.Comment
-                });
+                    var itemModel = new ExpenseItem
+                    {
+                        Id = item.Id,
+                        BillId = model.Id,
+                        CategoryId = item.CategoryId,
+                        ProductId = item.ProductId,
+                        DateTime = item.DateTime,
+                        Price = item.Cost,
+                        Quantity = item.Quantity,
+                        Comment = item.Comment
+                    };
+                    if (item.Id < 0)
+                        itemsRepo.Create(itemModel);
+                    else
+                        _unitOfWork.UpdateModel(itemModel);
+                }
+                else if (item.IsDeleted)
+                {
+                    var itemModel = await _unitOfWork.GetQueryRepository<ExpenseItem>().GetById(item.Id);
+                    if (itemModel == null) continue;
+                    itemsRepo.Delete(itemModel);
+                }
             }
 
             _unitOfWork.UpdateModel(new ExpenseBill

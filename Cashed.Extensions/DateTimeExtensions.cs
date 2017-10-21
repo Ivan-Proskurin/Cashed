@@ -14,7 +14,23 @@ namespace Cashed.Extensions
 
         public static DateTime EndOfTheMonth(this DateTime value)
         {
-            return StartOfTheMonth(value).AddMonths(1);
+            return StartOfTheMonth(value).AddMonths(1).AddSeconds(-1);
+        }
+
+        public static DateTime StartOfTheWeek(this DateTime value)
+        {
+            var monday = value;
+            while (monday.DayOfWeek != DayOfWeek.Monday)
+                monday = monday.AddDays(-1);
+            return new DateTime(monday.Year, monday.Month, monday.Day);
+        }
+
+        public static DateTime EndOfTheWeek(this DateTime value)
+        {
+            var sunday = value;
+            while (sunday.DayOfWeek != DayOfWeek.Sunday)
+                sunday = sunday.AddDays(1);
+            return new DateTime(sunday.Year, sunday.Month, sunday.Day).AddDays(1).AddSeconds(-1);
         }
 
         public static string ToStandardString(this DateTime value, bool toMinutes = true)

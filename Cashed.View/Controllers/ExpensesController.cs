@@ -8,12 +8,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using Cashed.Extensions;
+using Newtonsoft.Json;
 
 namespace Cashed.View.Controllers
 {
     public class ExpensesController : Controller
     {
         private static readonly string CurrentBillSessionName = "CurrentBill";
+        private static readonly string DeferredBillSessionName = "DeferredBill";
         private static readonly string CurrentFilterSessionName = "CurrentFilter";
 
         private readonly IExpensesBillQueries _expensesBillQueries;
@@ -84,7 +86,7 @@ namespace Cashed.View.Controllers
             var filter = GetCurrentFilter();
             if (filter == null)
             {
-                filter = new ExpensesListFilter(DateTime.Today, DateTime.Today.AddDays(1));
+                filter = new ExpensesListFilter(DateTime.Today.StartOfTheWeek(), DateTime.Today.EndOfTheWeek());
                 SetCurrentFilter(filter);
             }
             var model = await CreateExpensesBillsViewList(filter, page);
@@ -127,14 +129,15 @@ namespace Cashed.View.Controllers
             return View(await CreateExpenseItemViewModel(-1, datetime, category, noItems));
         }
 
-        private async Task<ExpenseItemViewModel> CreateExpenseItemViewModel(int id, string datetime, string category, bool noItems)
+        private async Task<ExpenseItemViewModel> CreateExpenseItemViewModel(
+            int id, string datetime, string category, bool noItems)
         {
             var model = new ExpenseItemViewModel
             {
                 Id = id,
                 DateTime = datetime ?? DateTime.Now.ToStandardString(false),
                 Category = category,
-                NoItems = noItems
+                NoItems = noItems,
             };
             model.AvailCategories = await GetAllCategoriesNames();
             return model;
@@ -154,11 +157,11 @@ namespace Cashed.View.Controllers
                 try
                 {
                     var expenseItem = await ExpenseItemViewModelToModel(model);
-                    var bill = GetCurrentBill();
+                    var bill = GetOrCreateCurrentBill();
                     bill.AddItem(expenseItem);
                     return RedirectToAction("Add", new {datetime = model.DateTime, category = model.Category, newBill = false});
                 }
-                catch (Exception ex)
+                catch (FormatException ex)
                 {
                     ModelState.AddModelError("", ex.Message);
                 }
@@ -196,6 +199,19 @@ namespace Cashed.View.Controllers
 
         private ExpenseBillModel GetCurrentBill()
         {
+            return Session[CurrentBillSessionName] as ExpenseBillModel;
+        }
+
+        public ExpenseBillModel GetCurrentBillOrThrowException()
+        {
+            var bill = GetCurrentBill();
+            if (bill == null)
+                throw new InvalidOperationException("Не найден текущий счет в текущей сессии");
+            return bill;
+        }
+
+        private ExpenseBillModel GetOrCreateCurrentBill()
+        {
             var bill = Session[CurrentBillSessionName] as ExpenseBillModel;
             if (bill == null)
             {
@@ -217,12 +233,13 @@ namespace Cashed.View.Controllers
         public ActionResult GetSubtotal()
         {
             var culture = new CultureInfo("ru-ru");
-            var bill = GetCurrentBill();
+            var bill = GetOrCreateCurrentBill();
+            var items = bill.GetItems();
             var subtotal = new ExpenseBillViewModel
             {
-                DateTime = bill.Items.Count > 0 ? "за " + bill.DateTime.ToStandardDateStr() : string.Empty,
+                DateTime = items.Count > 0 ? "за " + bill.DateTime.ToStandardDateStr() : string.Empty,
                 Subtotal = bill.Cost.ToString(culture),
-                Subtotals = bill.Items.Select(x => new ExpenseItemViewModel
+                Subtotals = items.Select(x => new ExpenseItemViewModel
                 {
                     Category = x.Category,
                     Product = x.Product,
@@ -236,7 +253,7 @@ namespace Cashed.View.Controllers
         public async Task<ActionResult> CommitBill()
         {
             var bill = GetCurrentBill();
-            if (bill.Items.Count == 0)
+            if (bill == null || bill.Items.Count == 0)
                 return RedirectToAction("Add", new { noItems = true });
 
             if (bill.Id > 0)
@@ -244,16 +261,21 @@ namespace Cashed.View.Controllers
             else
                 await _expensesBillCommands.Create(bill);
 
-            Session[CurrentBillSessionName] = null;
+            SetCurrentBill(null);
 
             return RedirectToAction("Index");
         }
 
         public async Task<ActionResult> Edit(int id)
         {
-            var bill = await _expensesBillQueries.GetById(id);
-            SetCurrentBill(bill);
-            return View("Add", await CreateExpenseItemViewModel(id, bill.DateTime.ToStandardString(), null, false));
+            var bill = GetCurrentBill();
+            if (bill == null || bill.Id != id)
+            {
+                bill = await _expensesBillQueries.GetById(id);
+                SetCurrentBill(bill);
+            }
+            return View("Add", await CreateExpenseItemViewModel(
+                id, bill.DateTime.ToStandardString(), null, false));
         }
 
         [HttpPost]
@@ -264,7 +286,7 @@ namespace Cashed.View.Controllers
                 try
                 {
                     var expenseItem = await ExpenseItemViewModelToModel(model);
-                    var bill = GetCurrentBill();
+                    var bill = GetCurrentBillOrThrowException();
                     bill.AddItem(expenseItem);
 
                     return RedirectToAction("Add", new { datetime = model.DateTime, category = model.Category, newBill = false });
@@ -276,6 +298,88 @@ namespace Cashed.View.Controllers
             }
             model.AvailCategories = await GetAllCategoriesNames();
             return View("Add", model);
+        }
+
+        public ActionResult EditItems(bool deferBill = true)
+        {
+            var bill = GetCurrentBillOrThrowException();
+            if (!deferBill) return View(bill);
+            Session[DeferredBillSessionName] = bill;
+            var clone = bill.Clone();
+            SetCurrentBill(clone);
+            return View(clone);
+        }
+
+        [HttpPost]
+        public ActionResult EditItems(ExpenseBillModel model)
+        {
+            var bill = GetCurrentBill();
+            if (bill != null)
+            {
+                Session[DeferredBillSessionName] = null;
+                return RedirectToAction("Edit", new { id = bill.Id });
+            }
+            return RedirectToAction("Index");
+        }
+
+        public JsonResult DeleteItems(string itemIndicies)
+        {
+            var bill = GetCurrentBillOrThrowException();
+            var indicies = JsonConvert.DeserializeObject<int[]>(itemIndicies);
+            bill.DeleteItems(indicies);
+            return Json(indicies, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult CancelEditItems()
+        {
+            Session[CurrentBillSessionName] = Session[DeferredBillSessionName];
+            var bill = GetCurrentBill();
+            return bill != null ? RedirectToAction("Edit", new { id = bill.Id }) : RedirectToAction("Index");
+        }
+
+        public async Task<ActionResult> EditExpenseItem(int id)
+        {
+            var bill = GetCurrentBillOrThrowException();
+            var item = bill.GetItem(id);
+            return View(new ExpenseItemViewModel
+            {
+                Id = id,
+                DateTime = item.DateTime.ToStandardString(),
+                Category = item.Category,
+                Product =  item.Product,
+                Quantity = item.Quantity.ToStandardString(),
+                Comment = item.Comment,
+                Price = item.Cost.ToStandardString(),
+                AvailCategories = await GetAllCategoriesNames()
+            });
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> EditExpenseItem(ExpenseItemViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var item = await ExpenseItemViewModelToModel(model);
+                    var bill = GetCurrentBillOrThrowException();
+                    item.Id = model.Id;
+                    item.IsModified = true;
+                    bill.SetItem(item);
+                    return RedirectToAction("EditItems", new {deferBill = false});
+                }
+                catch (FormatException ex)
+                {
+                    ModelState.AddModelError("", ex.Message);
+                }
+            }
+            model.AvailCategories = await GetAllCategoriesNames();
+            return View(model);
+        }
+
+        public ActionResult CancelEditExpenseItem()
+        {
+            return RedirectToAction("EditItems", new {deferBill = false});
         }
     }
 }

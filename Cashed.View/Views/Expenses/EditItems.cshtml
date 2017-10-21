@@ -1,0 +1,131 @@
+﻿@using Cashed.Extensions
+@model Logic.Cashed.Contract.Models.ExpenseBillModel
+
+@{
+    ViewBag.Title = "Редактирование счета";
+}
+
+<button class="showcheckboxes btn btn-outline-secondary btn-sm" hidden>Выбрать</button>
+<button class="hidecheckboxes btn btn-outline-secondary btn-sm" hidden>Убрать выделение</button>
+<button type="button" class="delete-button btn btn-outline-danger btn-sm" hidden>
+    Удалить
+</button>
+
+<table id="items-table" class="table table-striped table-hover">
+    <thead>
+    <tr>
+        <th class="checkbox-cell" hidden>
+            <input type="checkbox" class="toggle-all-chechboxes" />
+        </th>
+        <th>Номер</th>
+        <th>Дата/время</th>
+        <th>Категория</th>
+        <th>Название</th>
+        <th>Стоимость</th>
+        <th>Количество</th>
+    </tr>
+    </thead>
+    <tbody>
+    @{
+        var items = Model.GetItems();
+    }
+    @for (var i = 0; i < items.Count; i++)
+    {
+        <tr class="data-row" data-id="@i">
+            <td class="checkbox-cell" hidden>
+                <input type="checkbox" class="item-checkbox" data-id="@i"/>
+            </td>
+            <td>@(i + 1)</td>
+            <td>@items[i].DateTime.ToStandardString()</td>
+            <td>@items[i].Category</td>
+            <td>@Html.ActionLink(items[i].Product, "EditExpenseItem", new { id = items[i].Id }, new { @class = "edit-item-link"})</td>
+            <td>@items[i].Cost</td>
+            <td>@items[i].Quantity</td>
+        </tr>
+    }
+    </tbody>
+    
+</table>
+
+@using (Html.BeginForm())
+{
+    <div class="bottom-buttons-row">
+        <input type="submit" value="Сохранить" class="btn btn-primary"/>
+        @Html.ActionLink("Отмена", "CancelEditItems", null, new { @class = "btn btn-danger" })
+    </div>
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+        activateLink("#expensesLink");
+
+        $(".item-checkbox").change(itemsCheckboxesChanged);
+
+        var checkboxedTable = new CheckboxedTable(itemsCheckboxesChanged);
+
+        checkboxedTable.showControls();
+
+        function itemsCheckboxesChanged() {
+            if (checkboxedTable.getSelectedCount() > 0)
+                $(".delete-button").removeAttr("hidden");
+            else
+                $(".delete-button").attr("hidden", "hidden");
+        }
+
+        $(".delete-button").click(function() {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("DeleteItems", "Expenses")',
+                contentType: "application/json; charset=utf-8",
+                data: { itemIndicies: JSON.stringify(getDeleteIdList()) },
+                dataType: "json",
+                success: function (data) {
+                    deleteRows(data);
+                },
+                error: function () { alert('Failure'); }
+            });
+        });
+
+        function getDeleteIdList() {
+            var chk = checkboxedTable.getSelectedCheckboxes();
+            var ids = chk.map(function (index, item) {
+                return +$(item).attr("data-id");
+            });
+            var idList = [];
+            for (var i = 0; i < ids.length; i++) {
+                idList[i] = +ids[i];
+            }
+            return idList;
+        }
+
+        function deleteRows(ids) {
+            for (var i = 0; i < ids.length; i++) {
+                var tr = $("tr[data-id=" + ids[i] + "]");
+                tr.remove();
+            }
+            updateRowIndicies();
+            itemsCheckboxesChanged();
+            updateShowcheboxesVisibility();
+        }
+
+        function updateRowIndicies() {
+            var table = document.getElementById("items-table");
+            for (var i = 1; i < table.rows.length; i++) {
+                var row = $(table.rows[i]);
+                row.attr("data-id", i - 1);
+                var checkbox = table.rows[i].firstElementChild.firstElementChild;
+                $(checkbox).attr("data-id", i - 1);
+                $(table.rows[i].cells[1]).html(i);
+            }
+        }
+
+        function updateShowcheboxesVisibility() {
+            if ($(".data-row").length) {
+                checkboxedTable.hideCheckboxes();
+            } else {
+                checkboxedTable.hideControls();
+            }
+        }
+    </script>
+}

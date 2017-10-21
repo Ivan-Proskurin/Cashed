@@ -13,5 +13,8 @@ namespace Logic.Cashed.Contract.Models
         public decimal Cost { get; set; }
         public decimal Quantity { get; set; }
         public string Comment { get; set; }
+
+        public bool IsDeleted { get; set; }
+        public bool IsModified { get; set; }
     }
 }
