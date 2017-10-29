@@ -4,7 +4,8 @@
     ViewBag.Title = "Доходы";
 }
 
-<h3 class="form-caption-bg">Добавление дохода</h3>
+<div class="centered-form">
+    <h3 class="form-caption-bg">Добавление дохода</h3>
 
     @using (Html.BeginForm())
     {
@@ -12,59 +13,52 @@
         @Html.ValidationSummary(true)
 
         <div class="form-group row">
-            @Html.LabelFor(m => m.DateTime, new { @class = "col-form-label col-sm-2" })
-            <div id='datepicker' class='input-group date col-sm-6' >
-                @Html.TextBoxFor(m => m.DateTime, new { @class = "form-control", autocomplete="off" })
+            @Html.LabelFor(m => m.DateTime, new { @class = "col-form-label col-md-3" })
+            <div id='datepicker' class='input-group date col-md-9'>
+                @Html.TextBoxFor(m => m.DateTime, new { @class = "form-control", autocomplete = "off" })
                 <span class="input-group-addon" id="date-picker-button">
                     <i class="fa fa-calendar"></i>
                 </span>
             </div>
             <div class="container">
                 <div class="row">
-                    <div class="col-sm-2"></div>
-                    <div class="col-sm-6">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-9">
                         @Html.ValidationMessageFor(m => m.DateTime)
                     </div>
                 </div>
             </div>
         </div>
         <div class="form-group row">
-            @Html.LabelFor(m => m.IncomeType, new { @class = "col-form-label col-sm-2" })
-            @Html.TextBoxFor(m => m.IncomeType, new { @class = "form-control", list = "typesList", autocomplete="off" })
+            @Html.LabelFor(m => m.IncomeType, new { @class = "col-form-label col-md-3" })
+            @Html.TextBoxFor(m => m.IncomeType, new { @class = "form-control", list = "typesList", autocomplete = "off" })
+            @Html.ValidationMessageFor(m => m.IncomeType)
             <datalist id="typesList">
                 @for (var i = 0; i < Model.IncomeTypes.Count; i++)
                 {
                     <option>@Model.IncomeTypes[i].Name</option>
                 }
             </datalist>
-            @Html.LabelFor(m => m.Total, new { @class = "col-form-label col-sm-1" })
-            @Html.TextBoxFor(m => m.Total, new { @class = "form-control col-sm-2" })
-        </div>
-        <div class="container validation-message-in-container">
-            <div class="row">
-                <div class="col col-sm-2"></div>
-                <div class="col col-sm-3">
-                    @Html.ValidationMessageFor(m => m.IncomeType)
-                </div>
-                <div class="col col-sm-1"></div>
-                <div class="col col-sm-3">
-                    @Html.ValidationMessageFor(m => m.Total)
-                </div>
+            @Html.LabelFor(m => m.Total, new { @class = "col-form-label col-md-1" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.Total, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Total)
             </div>
         </div>
 
         <div class="bottom-buttons-row">
-            <input type="submit" value="Сохранить" class="btn btn-outline-primary cursor-pointer"/>
+            <input type="submit" value="Сохранить" class="btn btn-outline-primary cursor-pointer" />
             @Html.ActionLink("Отмена", "Index", null, new { @class = "btn btn-outline-danger" })
         </div>
     }
+</div>
 
 @section Scripts {
     <script type="text/javascript">
         activateLink("#incomesLink");
 
         makeInputDatetimePicker("DateTime");
-        makeInputAutocomplete("IncomeType", null, null, "col-sm-3");
+        makeInputAutocomplete("IncomeType", null, null, "col-md-4");
         makeInputNumeric("Total");
     </script>
 }
