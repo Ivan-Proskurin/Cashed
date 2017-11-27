@@ -1,5 +1,5 @@
-﻿using Cashed.DataAccess.Model.Basic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Cashed.DataAccess.Contract.Base;
 
 namespace Cashed.DataAccess.Contract
 {

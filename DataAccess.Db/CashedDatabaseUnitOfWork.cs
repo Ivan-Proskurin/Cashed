@@ -1,30 +1,50 @@
 ﻿using Cashed.DataAccess.Contract;
-using Cashed.DataAccess.Model.Basic;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Threading.Tasks;
+using Cashed.DataAccess.Contract.Base;
 
 namespace Cashed.DataAccess.Db
 {
     public class CashedDatabaseUnitOfWork : IUnitOfWork
     {
-        private CashedDbContext _context;
-        private Dictionary<Type, object> _queryRepositories;
-        private Dictionary<Type, object> _commandRepositories;
+        #region IDisposable
+
+        private bool _disposed;
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed) return;
+            if (disposing)
+            {
+                _context?.Dispose();
+            }
+            _disposed = true;
+        }
+
+        ~CashedDatabaseUnitOfWork()
+        {
+            Dispose(false);
+        }
+
+        #endregion
+
+        private readonly CashedDbContext _context;
+        private readonly Dictionary<Type, object> _queryRepositories;
+        private readonly Dictionary<Type, object> _commandRepositories;
 
         public CashedDatabaseUnitOfWork(CashedDbContext context)
         {
             _context = context;
             _queryRepositories = new Dictionary<Type, object>();
             _commandRepositories = new Dictionary<Type, object>();
-        }
-
-        public void UpdateModel<TModel>(TModel model) where TModel : class, IHasId
-        {
-            var cmdRep = GetCommandRepository<TModel>();
-            cmdRep.Update(model);
-            _context.Entry(model).State = EntityState.Modified;
         }
 
         public async Task Commit()
@@ -44,7 +64,7 @@ namespace Cashed.DataAccess.Db
                 if (gArgs.Length > 0 && gArgs[0] == typeof(T))
                 {
                     var pValue = p.GetValue(_context, new object[0]);
-                    var qr = new CommandRepository<T>(pValue as DbSet<T>);
+                    var qr = new CommandRepository<T>(_context, pValue as DbSet<T>);
                     _commandRepositories.Add(typeof(T), qr);
                     return qr;
                 }
@@ -91,5 +111,6 @@ namespace Cashed.DataAccess.Db
             }
             return null;
         }
+
     }
 }

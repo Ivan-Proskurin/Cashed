@@ -237,6 +237,7 @@
     <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\AccountsController.cs" />
     <Compile Include="Controllers\CategoryController.cs" />
     <Compile Include="Controllers\ExpensesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -245,8 +246,10 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\AccountListViewModel.cs" />
     <Compile Include="Models\AddCategoryViewModel.cs" />
     <Compile Include="Models\AddIncomeViewModel.cs" />
+    <Compile Include="Models\EditAccountViewModel.cs" />
     <Compile Include="Models\EditIncomeTypeViewModel.cs" />
     <Compile Include="Models\CategoryListViewModel.cs" />
     <Compile Include="Models\EditCategoryViewModel.cs" />
@@ -295,6 +298,9 @@
     <Content Include="Views\Shared\_Pagination.cshtml" />
     <Content Include="Views\Expenses\EditItems.cshtml" />
     <Content Include="Views\Expenses\EditExpenseItem.cshtml" />
+    <Content Include="Views\Accounts\Index.cshtml" />
+    <Content Include="Views\Accounts\Add.cshtml" />
+    <Content Include="Views\Accounts\Edit.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

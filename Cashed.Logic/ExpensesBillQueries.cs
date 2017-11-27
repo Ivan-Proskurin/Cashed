@@ -1,15 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Logic.Cashed.Contract;
-using Logic.Cashed.Contract.Models;
-using Cashed.DataAccess.Contract;
-using Cashed.DataAccess.Model.Expenses;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
-using Cashed.DataAccess.Model;
-using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Cashed.DataAccess.Contract;
+using Cashed.DataAccess.Model.Base;
+using Cashed.DataAccess.Model.Expenses;
+using Cashed.Logic.Contract;
+using Cashed.Logic.Contract.Models;
 
-namespace Logic.Cashed.Logic
+namespace Cashed.Logic
 {
     public class ExpensesBillQueries : IExpensesBillQueries
     {
@@ -124,7 +124,7 @@ namespace Logic.Cashed.Logic
 
         public Task<ExpenseBillModel> GetByName(string name, bool includeDeleted = false)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public TotalsInfoModel GetTotals(List<ExpenseBillModel> bills)

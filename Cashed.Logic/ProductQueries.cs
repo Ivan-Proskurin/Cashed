@@ -1,15 +1,14 @@
-﻿using Logic.Cashed.Contract;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using Logic.Cashed.Contract.Models;
 using Cashed.DataAccess.Contract;
-using Cashed.DataAccess.Model;
+using Cashed.DataAccess.Model.Base;
+using Cashed.Logic.Contract;
+using Cashed.Logic.Contract.Models;
 
-namespace Logic.Cashed.Logic
+namespace Cashed.Logic
 {
     public class ProductQueries : IProductQueries
     {

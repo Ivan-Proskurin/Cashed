@@ -1,8 +1,8 @@
-﻿using Cashed.DataAccess.Model.Basic;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Cashed.DataAccess.Contract.Base;
 
-namespace Cashed.DataAccess.Model
+namespace Cashed.DataAccess.Model.Base
 {
     public class Category : IHasName, IHasId
     {

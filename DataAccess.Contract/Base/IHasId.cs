@@ -1,4 +1,4 @@
-﻿namespace Cashed.DataAccess.Model.Basic
+﻿namespace Cashed.DataAccess.Contract.Base
 {
     public interface IHasId
     {

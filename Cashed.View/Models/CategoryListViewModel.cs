@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using Logic.Cashed.Contract.Models;
+using Cashed.Logic.Contract.Models;
 
 namespace Cashed.View.Models
 {

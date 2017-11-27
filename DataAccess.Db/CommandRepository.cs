@@ -1,15 +1,17 @@
 ﻿using Cashed.DataAccess.Contract;
-using Cashed.DataAccess.Model.Basic;
 using System.Data.Entity;
+using Cashed.DataAccess.Contract.Base;
 
 namespace Cashed.DataAccess.Db
 {
     public class CommandRepository<T> : ICommandRepository<T> where T : class, IHasId
     {
-        private DbSet<T> _dbSet;
+        private readonly CashedDbContext _context;
+        private readonly DbSet<T> _dbSet;
 
-        public CommandRepository(DbSet<T> dbSet)
+        public CommandRepository(CashedDbContext context, DbSet<T> dbSet)
         {
+            _context = context;
             _dbSet = dbSet;
         }
 
@@ -26,6 +28,7 @@ namespace Cashed.DataAccess.Db
         public void Update(T model)
         {
             _dbSet.Attach(model);
+            _context.Entry(model).State = EntityState.Modified;
         }
     }
 }

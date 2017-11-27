@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Cashed.DataAccess.Model.Basic;
+using Cashed.DataAccess.Contract.Base;
 
 namespace Cashed.DataAccess.Model.Incomes
 {

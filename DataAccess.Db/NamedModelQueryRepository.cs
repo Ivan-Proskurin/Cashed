@@ -1,8 +1,8 @@
 ﻿using Cashed.DataAccess.Contract;
-using Cashed.DataAccess.Model.Basic;
 using System;
 using System.Data.Entity;
 using System.Threading.Tasks;
+using Cashed.DataAccess.Contract.Base;
 
 namespace Cashed.DataAccess.Db
 {
@@ -16,7 +16,7 @@ namespace Cashed.DataAccess.Db
         public async Task<T> GetByName(string name)
         {
             if (string.IsNullOrEmpty(name))
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(nameof(name));
             var model = await Query.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower());
             return model;
         }

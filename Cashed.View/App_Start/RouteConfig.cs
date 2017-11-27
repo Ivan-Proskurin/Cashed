@@ -12,7 +12,7 @@ namespace Cashed.View
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Incomes", action = "Index", id = UrlParameter.Optional }
+                defaults: new { controller = "Accounts", action = "Index", id = UrlParameter.Optional }
             );
         }
     }

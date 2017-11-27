@@ -44,16 +44,23 @@ function makeInputAutocomplete(inputId, list, onSelect, containerClass) {
     return comboplete;
 }
 
-function makeInputNumeric(inputId) {
+function makeInputNumeric(inputId, allowNegative = false) {
     var input = document.getElementById(inputId);
     var $input = $("#" + inputId);
-    input.onkeypress = function (evt) {
+    input.onkeydown = function (evt) {
         var charCode = (evt.which) ? evt.which : event.keyCode;
         if (charCode == 32) return false;
-        var last = String.fromCharCode(charCode);
-        var value = ($input.val() + last).replace(",", ".");
-        var int = +value;
-        return !isNaN(int);
+        if (charCode == 8) return true;
+        var last = event.char;
+        var value = $input.val();
+        if (last == "-" && !allowNegative) return false;
+        if (last == "-" && value.length == 0) return true;
+        var start = input.selectionStart;
+        var end = input.selectionEnd;
+        value = value.slice(0, start) + last + value.slice(end);
+        value = value.replace(",", ".");
+        var num = +value;
+        return !isNaN(num);
     };
 }
 

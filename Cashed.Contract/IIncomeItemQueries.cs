@@ -1,6 +1,7 @@
-﻿using Logic.Cashed.Contract.Models;
+﻿using Cashed.Logic.Contract.Base;
+using Cashed.Logic.Contract.Models;
 
-namespace Logic.Cashed.Contract
+namespace Cashed.Logic.Contract
 {
     public interface IIncomeItemQueries : ICommonModelQueries<IncomeItemModel>
     {

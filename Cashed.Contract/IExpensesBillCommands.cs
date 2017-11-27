@@ -1,9 +1,10 @@
-﻿using Logic.Cashed.Contract.Models;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Cashed.Logic.Contract.Base;
+using Cashed.Logic.Contract.Models;
 
-namespace Logic.Cashed.Contract
+namespace Cashed.Logic.Contract
 {
-    public interface IExpensesBillCommands : IGenericModelCommands<ExpenseBillModel>
+    public interface IExpensesBillCommands : ICommonModelCommands<ExpenseBillModel>
     {
         Task Create(ExpenseBillModel model);
     }

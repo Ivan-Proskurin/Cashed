@@ -1,0 +1,130 @@
+﻿@using Cashed.Extensions
+@model Cashed.View.Models.AccountListViewModel
+
+@{
+    ViewBag.Title = "Счета";
+}
+
+<button class="showcheckboxes btn btn-outline-secondary btn-sm">Выбрать</button>
+<button class="hidecheckboxes btn btn-outline-secondary btn-sm" hidden>Убрать выделение</button>
+<button type="button" class="delete-button btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#deleteModal" hidden>
+    Удалить
+</button>
+<table class="cashed-table table table-striped table-hover">
+    <thead class="thead-inverse">
+    <tr>
+        <th class="checkbox-cell" hidden>
+            <input type="checkbox" class="toggle-all-chechboxes"/>
+        </th>
+        <th>
+            Номер
+        </th>
+        <th>
+            Название
+        </th>
+        <th>
+            Баланс
+        </th>
+    </tr>
+    </thead>
+    <tbody id="cat-table-body">
+        
+    @for (var i = 0; i < Model.List.Accounts.Count; i++)
+    {
+        var account = Model.List.Accounts[i];
+        
+        <tr data-id="@account.Id">
+            <td class="checkbox-cell" hidden>
+                <input type="checkbox" class="item-checkbox" data-id="@account.Id"/>
+            </td>
+            <td>@(i + 1)</td>
+            <td>
+                @Html.ActionLink(account.Name, "Edit", new {id = account.Id}, new {@class = "edit-item-link"})
+            </td>
+            <td>
+                @account.Balance.ToMoney()
+            </td>
+        </tr>
+    }
+
+    </tbody>
+    <tfoot>
+    <tr class="table-dark">
+        <td class="checkbox-cell" hidden></td>
+        <td colspan="2" class="totals-caption">@Model.List.Totals.Caption</td>
+        <td>@Model.List.Totals.Total.ToMoney()</td>
+    </tr>
+    </tfoot>
+</table>
+
+<!-- Adding account -->
+<div class="bottom-buttons-row">
+    @Html.ActionLink("Добавить счет", "Add", null, new { @class = "btn btn-primary cursor-pointer" })
+</div>
+
+<!-- Deletion modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Удаление счетов</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Удалить помеченные счета с сохранением расходов и доходов по ним?
+                Или удалить их полностью? Тогда операции по счетам будут удалены также.
+            </div>
+            <div class="modal-footer">
+                <button id="deleteOnlyMarkButton" type="button" class="btn btn-primary" data-dismiss="modal">Удалить с сохранением</button>
+                <button id="deleteFullButton" type="button" class="btn btn-danger" data-dismiss="modal">Удалить полностью</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+        activateLink("#accountsLink");
+
+        var checkboxedTable = new CheckboxedTable(accountCheckboxChanged);
+
+        $(".item-checkbox").change(accountCheckboxChanged);
+        $("#deleteOnlyMarkButton").click(function() { deleteAccounts(true); });
+        $("#deleteFullButton").click(function() { deleteAccounts(false); });
+
+        function accountCheckboxChanged() {
+            if (checkboxedTable.getSelectedCount() > 0)
+                $(".delete-button").removeAttr("hidden");
+            else
+                $(".delete-button").attr("hidden", "hidden");
+        }
+
+        function deleteAccounts(onlyMark) {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("Delete", "Accounts")',
+                contentType: "application/json; charset=utf-8",
+                data: { idList: JSON.stringify(getDeleteIdList()), onlyMark: onlyMark },
+                dataType: "json",
+                success: function () {
+                    location.reload();
+                },
+                error: function() { alert('Server failure!'); }
+            });
+        }
+
+        function getDeleteIdList() {
+            var chk = checkboxedTable.getSelectedCheckboxes();
+            var ids = chk.map(function(index, item) {
+                return +$(item).attr("data-id");
+            });
+            var idList = [];
+            for (var i = 0; i < ids.length; i++) {
+                idList[i] = +ids[i];
+            }
+            return idList;
+        }
+    </script>
+}

@@ -1,10 +1,10 @@
 ﻿using System.Threading.Tasks;
 using Cashed.DataAccess.Contract;
 using Cashed.DataAccess.Model.Incomes;
-using Logic.Cashed.Contract;
-using Logic.Cashed.Contract.Models;
+using Cashed.Logic.Contract;
+using Cashed.Logic.Contract.Models;
 
-namespace Logic.Cashed.Logic
+namespace Cashed.Logic
 {
     public class IncomeItemCommands : IIncomeItemCommands
     {
@@ -22,6 +22,7 @@ namespace Logic.Cashed.Logic
 
         public async Task<IncomeItemModel> Update(IncomeItemModel model)
         {
+            var itemRepo = _unitOfWork.GetCommandRepository<IncomeItem>();
             var item = new IncomeItem
             {
                 Id = model.Id,
@@ -31,11 +32,10 @@ namespace Logic.Cashed.Logic
             };
             if (item.Id > 0)
             {
-                _unitOfWork.UpdateModel(item);
+                itemRepo.Update(item);
             }
             else
             {
-                var itemRepo = _unitOfWork.GetCommandRepository<IncomeItem>();
                 itemRepo.Create(item);
             }
             await _unitOfWork.Commit();

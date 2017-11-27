@@ -1,4 +1,5 @@
-﻿@model Cashed.View.Models.IncomeTypesListViewModel
+﻿@using Cashed.Extensions
+@model Cashed.View.Models.IncomeTypesListViewModel
 
 @{
     ViewBag.Title = "Доходы";
@@ -37,7 +38,7 @@
         </div>
     </div>
 </div>
-<table class="expenses-table table table-striped table-hover">
+<table class="cashed-table table table-striped table-hover">
     <thead class="thead-inverse">
         <tr>
             <th>Номер</th>
@@ -51,14 +52,14 @@
             <tr data-id="@Model.List[i]">
                 <td>@Model.List[i].Id</td>
                 <td>@Html.ActionLink(Model.List[i].Name, "EditIncomeType", new { id = Model.List[i].Id }, new { @class = "edit-item-link" })</td>
-                <td>@Model.List[i].SumTotal</td>
+                <td>@Model.List[i].SumTotal.ToMoney()</td>
             </tr>
         }
     </tbody>
     <tfoot>
         <tr class="table-dark">
-            <td colspan="2" class="expenses-totals-caption">@Model.Total.Caption</td>
-            <td>@Model.Total.Total</td>
+            <td colspan="2" class="totals-caption">@Model.Total.Caption</td>
+            <td>@Model.Total.Total.ToMoney()</td>
         </tr>
     </tfoot>
 </table>

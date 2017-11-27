@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Logic.Cashed.Contract.Models
+namespace Cashed.Logic.Contract.Models
 {
     public class PaginationInfo
     {
@@ -13,9 +13,9 @@ namespace Logic.Cashed.Contract.Models
         public static PaginationInfo FromArgs(PaginationArgs args, int totalItemsCount)
         {
             if (args.ItemsPerPage == 0)
-                throw new ArgumentException("Количество записей на страницу должно быть больше нуля", "ItemsPerPage");
+                throw new ArgumentException("Количество записей на страницу должно быть больше нуля", nameof(args.ItemsPerPage));
             if (args.PageNumber < 1 && args.PageNumber != -1)
-                throw new ArgumentException("Номер страницы должно быть больше нуля", "PageNumber");
+                throw new ArgumentException("Номер страницы должно быть больше нуля", nameof(args.PageNumber));
 
             var totalPageCount = totalItemsCount / args.ItemsPerPage;
             if (totalItemsCount % args.ItemsPerPage > 0) totalPageCount++;

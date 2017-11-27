@@ -1,14 +1,14 @@
-﻿using System.Collections.Generic;
-using Logic.Cashed.Contract;
-using Logic.Cashed.Contract.Models;
-using System.Threading.Tasks;
-using Cashed.DataAccess.Contract;
-using Cashed.DataAccess.Model;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System;
+using System.Threading.Tasks;
+using Cashed.DataAccess.Contract;
+using Cashed.DataAccess.Model.Base;
+using Cashed.Logic.Contract;
+using Cashed.Logic.Contract.Models;
 
-namespace Logic.Cashed.Logic
+namespace Cashed.Logic
 {
     public class CategoriesQueries : ICategoriesQueries
     {

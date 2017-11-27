@@ -1,11 +1,11 @@
 ﻿using Cashed.View.Models;
-using Logic.Cashed.Contract;
-using Logic.Cashed.Contract.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using Cashed.Logic.Contract;
+using Cashed.Logic.Contract.Models;
 
 namespace Cashed.View.Controllers
 {
@@ -85,7 +85,7 @@ namespace Cashed.View.Controllers
             }
             catch (ArgumentException ex)
             {
-                return Json(new { Status = false, Message = ex.Message }, JsonRequestBehavior.AllowGet);
+                return Json(new { Status = false, ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
 

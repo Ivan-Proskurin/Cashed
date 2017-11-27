@@ -1,5 +1,6 @@
 ﻿using Cashed.DataAccess.Contract;
 using Cashed.DataAccess.Model;
+using Cashed.DataAccess.Model.Base;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Cashed.DataAccess.Db.Tests

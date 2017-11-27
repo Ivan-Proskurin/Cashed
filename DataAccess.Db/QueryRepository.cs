@@ -1,15 +1,14 @@
 ﻿using Cashed.DataAccess.Contract;
-using Cashed.DataAccess.Model.Basic;
-using System;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using Cashed.DataAccess.Contract.Base;
 
 namespace Cashed.DataAccess.Db
 {
     public class QueryRepository<T> : IQueryRepository<T> where T : class, IHasId
     {
-        private DbSet<T> _dbSet;
+        private readonly DbSet<T> _dbSet;
 
         public QueryRepository(DbSet<T> dbSet)
         {

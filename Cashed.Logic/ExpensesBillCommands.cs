@@ -1,11 +1,11 @@
-﻿using Logic.Cashed.Contract;
-using System;
+﻿using System;
 using System.Threading.Tasks;
-using Logic.Cashed.Contract.Models;
 using Cashed.DataAccess.Contract;
 using Cashed.DataAccess.Model.Expenses;
+using Cashed.Logic.Contract;
+using Cashed.Logic.Contract.Models;
 
-namespace Logic.Cashed.Logic
+namespace Cashed.Logic
 {
     public class ExpensesBillCommands : IExpensesBillCommands
     {
@@ -23,7 +23,7 @@ namespace Logic.Cashed.Logic
 
         public async Task<ExpenseBillModel> Update(ExpenseBillModel model)
         {
-            var itemsRepo = _unitOfWork.GetCommandRepository<ExpenseItem>();
+            var commands = _unitOfWork.GetCommandRepository<ExpenseItem>();
             foreach (var item in model.Items)
             {
                 if (item.Id > 0 && !item.IsModified && !item.IsDeleted) continue;
@@ -41,19 +41,20 @@ namespace Logic.Cashed.Logic
                         Comment = item.Comment
                     };
                     if (item.Id < 0)
-                        itemsRepo.Create(itemModel);
+                        commands.Create(itemModel);
                     else
-                        _unitOfWork.UpdateModel(itemModel);
+                        commands.Update(itemModel);
                 }
                 else if (item.IsDeleted)
                 {
                     var itemModel = await _unitOfWork.GetQueryRepository<ExpenseItem>().GetById(item.Id);
                     if (itemModel == null) continue;
-                    itemsRepo.Delete(itemModel);
+                    commands.Delete(itemModel);
                 }
             }
 
-            _unitOfWork.UpdateModel(new ExpenseBill
+            var billCommands = _unitOfWork.GetCommandRepository<ExpenseBill>();
+            billCommands.Update(new ExpenseBill
             {
                 Id = model.Id,
                 DateTime = model.DateTime,

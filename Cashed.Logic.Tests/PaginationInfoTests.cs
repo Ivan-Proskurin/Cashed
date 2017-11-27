@@ -1,4 +1,4 @@
-﻿using Logic.Cashed.Contract.Models;
+﻿using Cashed.Logic.Contract.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Cashed.Logic.Tests

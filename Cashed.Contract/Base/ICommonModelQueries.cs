@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Logic.Cashed.Contract
+namespace Cashed.Logic.Contract.Base
 {
     public interface ICommonModelQueries<T> where T : class
     {

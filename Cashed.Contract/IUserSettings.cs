@@ -1,4 +1,4 @@
-﻿namespace Logic.Cashed.Contract
+﻿namespace Cashed.Logic.Contract
 {
     public interface IUserSettings
     {

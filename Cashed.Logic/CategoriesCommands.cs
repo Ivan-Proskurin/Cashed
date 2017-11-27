@@ -1,12 +1,12 @@
-﻿using Cashed.DataAccess.Contract;
-using Cashed.DataAccess.Model;
-using Logic.Cashed.Contract;
-using Logic.Cashed.Contract.Models;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Cashed.DataAccess.Contract;
+using Cashed.DataAccess.Model.Base;
+using Cashed.Logic.Contract;
+using Cashed.Logic.Contract.Models;
 
-namespace Logic.Cashed.Logic
+namespace Cashed.Logic
 {
     public class CategoriesCommands : ICategoriesCommands
     {
@@ -33,7 +33,7 @@ namespace Logic.Cashed.Logic
             {
                 await _productCommands.GroupDeletion(products.Select(x => x.Id).ToArray());
                 category.IsDeleted = true;
-                _unitOfWork.UpdateModel(category);
+                categoriesCommands.Update(category);
             }
             else
             {
@@ -45,6 +45,7 @@ namespace Logic.Cashed.Logic
 
         public async Task<CategoryModel> Update(CategoryModel model)
         {
+            var categoryCommands = _unitOfWork.GetCommandRepository<Category>();
             var categoryRespoitory = _unitOfWork.GetCommandRepository<Category>();
             var category = new Category
             {
@@ -58,7 +59,7 @@ namespace Logic.Cashed.Logic
 
             if (model.Id > 0)
             {
-                _unitOfWork.UpdateModel(category);
+                categoryCommands.Update(category);
             }
             else
             {

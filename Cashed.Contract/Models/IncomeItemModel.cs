@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Logic.Cashed.Contract.Models
+namespace Cashed.Logic.Contract.Models
 {
     public class IncomeItemModel
     {

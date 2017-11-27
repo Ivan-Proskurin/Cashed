@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace Logic.Cashed.Contract
+namespace Cashed.Logic.Contract.Base
 {
-    public interface IGenericModelCommands<T> where T : class
+    public interface ICommonModelCommands<T> where T : class
     {
         Task<T> Update(T model);
         Task Delete(int id, bool onlyMark = true);

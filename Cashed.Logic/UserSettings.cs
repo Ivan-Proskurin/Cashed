@@ -1,6 +1,6 @@
-﻿using Logic.Cashed.Contract;
+﻿using Cashed.Logic.Contract;
 
-namespace Logic.Cashed.Logic
+namespace Cashed.Logic
 {
     public class UserSettings : IUserSettings
     {

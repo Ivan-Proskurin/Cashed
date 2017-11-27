@@ -18,17 +18,20 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    @Html.ActionLink("Счета", "Index", "Accounts", null, new { id = "accountsLink", @class = "nav-link" })
+                </li>
+                <li class="nav-item">
+                    @Html.ActionLink("Категории", "Index", "Category", null, new {id = "categoriesLink", @class = "nav-link"})
+                </li>
+                <li class="nav-item">
+                    @Html.ActionLink("Продукты", "Index", "Products", null, new {id = "productsLink", @class = "nav-link"})
+                </li>
                 <li class="nav-item active">
-                    @Html.ActionLink("Категории", "Index", "Category", null, new { id = "categoriesLink", @class = "nav-link" })
+                    @Html.ActionLink("Расходы", "Index", "Expenses", null, new {id = "expensesLink", @class = "nav-link"})
                 </li>
                 <li class="nav-item">
-                    @Html.ActionLink("Продукты", "Index", "Products", null, new { id = "productsLink", @class = "nav-link" })
-                </li>
-                <li class="nav-item">
-                    @Html.ActionLink("Расходы", "Index", "Expenses", null, new { id = "expensesLink", @class = "nav-link" })
-                </li>
-                <li class="nav-item">
-                    @Html.ActionLink("Доходы", "Index", "Incomes", null, new { id = "incomesLink", @class = "nav-link" })
+                    @Html.ActionLink("Доходы", "Index", "Incomes", null, new {id = "incomesLink", @class = "nav-link"})
                 </li>
             </ul>
         </div>

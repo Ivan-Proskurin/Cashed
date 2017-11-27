@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using Cashed.Logic.Contract;
+using Cashed.Logic.Contract.Models;
 using Cashed.View.Models;
-using Logic.Cashed.Contract;
-using Logic.Cashed.Contract.Models;
 using Newtonsoft.Json;
-using static System.String;
 
 namespace Cashed.View.Controllers
 {
@@ -59,7 +58,7 @@ namespace Cashed.View.Controllers
             }
             catch (ArgumentException ex)
             {
-                return Json(new {Status = false, Message = ex.Message}, JsonRequestBehavior.AllowGet);
+                return Json(new {Status = false, ex.Message}, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -117,7 +116,7 @@ namespace Cashed.View.Controllers
                 }
                 catch (ArgumentException exc)
                 {
-                    ModelState.AddModelError(Empty, exc.Message);
+                    ModelState.AddModelError(string.Empty, exc.Message);
                 }
             }
             model.Categories = await _categoriesQueries.GetAll();

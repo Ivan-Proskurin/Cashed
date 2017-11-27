@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Cashed.DataAccess.Contract;
-using Cashed.DataAccess.Model;
-using Logic.Cashed.Contract;
-using Logic.Cashed.Contract.Models;
-using Logic.Cashed.Logic;
+using Cashed.DataAccess.Model.Base;
+using Cashed.Logic.Contract;
+using Cashed.Logic.Contract.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
@@ -53,7 +52,7 @@ namespace Cashed.Logic.Tests
         public void UpdateWithNonUniqueName_ThrowsArgumentException()
         {
             _queriesMock.Setup(m => m.GetByName(It.IsAny<string>())).Returns<string>(
-                s => Task.FromResult<Category>(new Category()));
+                s => Task.FromResult(new Category()));
 
             var categoriesCommands = new CategoriesCommands(
                 _uowMock.Object, _productCommandsMock.Object, _productQueriesMock.Object);
@@ -64,7 +63,9 @@ namespace Cashed.Logic.Tests
             }
             catch (AggregateException ex)
             {
-                throw ex.InnerException;
+                if (ex.InnerExceptions != null)
+                    throw ex.InnerException;
+                throw;
             }
         }
     }

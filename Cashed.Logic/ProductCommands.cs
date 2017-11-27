@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Cashed.DataAccess.Contract;
-using Cashed.DataAccess.Model;
-using Logic.Cashed.Contract;
-using Logic.Cashed.Contract.Models;
+using Cashed.DataAccess.Model.Base;
+using Cashed.Logic.Contract;
+using Cashed.Logic.Contract.Models;
 
-namespace Logic.Cashed.Logic
+namespace Cashed.Logic
 {
     public class ProductCommands : IProductCommands
     {
@@ -18,18 +19,21 @@ namespace Logic.Cashed.Logic
 
         public async Task<ProductModel> Update(ProductModel model)
         {
+            var commands = _unitOfWork.GetCommandRepository<Product>();
             var queries = _unitOfWork.GetQueryRepository<Product>();
             var product = await queries.GetById(model.Id);
+            if (product == null)
+                throw new ArgumentException($"Нет продукта с идентификатором {model.Id}");
             product.Name = model.Name;
             product.CategoryId = model.CategoryId;
-            _unitOfWork.UpdateModel(product);
+            commands.Update(product);
             await _unitOfWork.Commit();
             return model;
         }
 
         public Task Delete(int id, bool onlyMark = true)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public async Task<ProductModel> AddProductToCategory(int categoryId, string productName)
@@ -63,7 +67,7 @@ namespace Logic.Cashed.Logic
                 if (onlyMark)
                 {
                     model.IsDeleted = true;
-                    _unitOfWork.UpdateModel(model);
+                    commands.Update(model);
                 }
                 else
                 {

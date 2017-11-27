@@ -20,7 +20,7 @@ a.edit-item-link {
     padding-top: 4px;
 }
 
-.expenses-table {
+.cashed-table {
     margin-top: 10px;
 }
 
@@ -67,7 +67,7 @@ a.edit-item-link {
     margin-top: 3px;
 }
 
-.expenses-totals-caption {
+.totals-caption {
     text-align: right;
 }
 

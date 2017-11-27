@@ -1,11 +1,11 @@
 ﻿using Cashed.Extensions;
 using Cashed.View.Models;
-using Logic.Cashed.Contract;
-using Logic.Cashed.Contract.Models;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using Cashed.Logic.Contract;
+using Cashed.Logic.Contract.Models;
 
 namespace Cashed.View.Controllers
 {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Logic.Cashed.Contract.Models
+namespace Cashed.Logic.Contract.Models
 {
     public class ExpenseBillModel
     {

@@ -15,5 +15,10 @@ namespace Cashed.Extensions
         {
             return value.ToString(Culture);
         }
+
+        public static string ToMoney(this decimal value)
+        {
+            return value.ToString("c", Culture);
+        }
     }
 }

@@ -41,8 +41,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Basic\Category.cs" />
-    <Compile Include="Basic\Product.cs" />
+    <Compile Include="Base\Account.cs" />
+    <Compile Include="Base\Category.cs" />
+    <Compile Include="Base\Product.cs" />
     <Compile Include="Expenses\ExpenseBill.cs" />
     <Compile Include="Expenses\ExpenseItem.cs" />
     <Compile Include="Incomes\IncomeItem.cs" />

@@ -1,6 +1,4 @@
 ﻿using Cashed.View.Models;
-using Logic.Cashed.Contract;
-using Logic.Cashed.Contract.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -8,6 +6,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using Cashed.Extensions;
+using Cashed.Logic.Contract;
+using Cashed.Logic.Contract.Models;
 using Newtonsoft.Json;
 
 namespace Cashed.View.Controllers

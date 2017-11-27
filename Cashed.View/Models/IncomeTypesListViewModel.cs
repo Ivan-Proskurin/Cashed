@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Logic.Cashed.Contract.Models;
+using Cashed.Logic.Contract.Models;
 
 namespace Cashed.View.Models
 {

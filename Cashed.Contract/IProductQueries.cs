@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
-using Logic.Cashed.Contract.Models;
 using System.Threading.Tasks;
+using Cashed.Logic.Contract.Base;
+using Cashed.Logic.Contract.Models;
 
-namespace Logic.Cashed.Contract
+namespace Cashed.Logic.Contract
 {
     public interface IProductQueries : ICommonModelQueries<ProductModel>
     {

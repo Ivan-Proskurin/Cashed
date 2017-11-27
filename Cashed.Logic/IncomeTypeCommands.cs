@@ -1,10 +1,10 @@
 ﻿using System.Threading.Tasks;
 using Cashed.DataAccess.Contract;
 using Cashed.DataAccess.Model.Incomes;
-using Logic.Cashed.Contract;
-using Logic.Cashed.Contract.Models;
+using Cashed.Logic.Contract;
+using Cashed.Logic.Contract.Models;
 
-namespace Logic.Cashed.Logic
+namespace Cashed.Logic
 {
     public class IncomeTypeCommands : IIncomeTypeCommands
     {
@@ -17,6 +17,7 @@ namespace Logic.Cashed.Logic
 
         public async Task<IncomeTypeModel> Update(IncomeTypeModel model)
         {
+            var typeRepo = _unitOfWork.GetCommandRepository<IncomeType>();
             var type = new IncomeType
             {
                 Id = model.Id,
@@ -24,11 +25,10 @@ namespace Logic.Cashed.Logic
             };
             if (type.Id > 0)
             {
-                _unitOfWork.UpdateModel(type);
+                typeRepo.Update(type);
             }
             else
             {
-                var typeRepo = _unitOfWork.GetCommandRepository<IncomeType>();
                 typeRepo.Create(type);
             }
             await _unitOfWork.Commit();

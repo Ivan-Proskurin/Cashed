@@ -1,4 +1,5 @@
-﻿@model Cashed.View.Models.ExpensesBillsViewList
+﻿@using Cashed.Extensions
+@model Cashed.View.Models.ExpensesBillsViewList
 @{
     ViewBag.Title = "Расходы";
 }
@@ -7,7 +8,7 @@
 
 <div class="container">
     <div class="row">
-        <span class="expenses-header col-sm-2">Счета</span>
+        <span class="expenses-header col-sm-2">Расходы</span>
         <div class="col-md-10">
             @using (@Html.BeginForm())
             {
@@ -36,7 +37,7 @@
         </div>
     </div>
 </div>
-<table class="expenses-table table table-striped table-hover">
+<table class="cashed-table table table-striped table-hover">
     <thead class="thead-inverse">
     <tr>
         <th>Дата/время</th>
@@ -52,14 +53,14 @@
         <tr data-id="@bill.Id">
             <td>@Html.ActionLink(bill.DateTime, "Edit", new { id = bill.Id }, new { @class = "edit-item-link" })</td>
             <td>@Html.ActionLink(bill.Category, "Edit", new { id = bill.Id }, new { @class = "edit-item-link" })</td>
-            <td>@Html.ActionLink(bill.Cost.ToString(), "Edit", new { id = bill.Id }, new { @class = "edit-item-link" })</td>
+            <td>@Html.ActionLink(bill.Cost.ToMoney(), "Edit", new { id = bill.Id }, new { @class = "edit-item-link" })</td>
         </tr>
     }
     </tbody>
     <tfoot>
     <tr class="table-dark">
-        <td colspan="2" class="expenses-totals-caption">@Model.Totals.Caption</td>
-        <td>@Model.Totals.Total</td>
+        <td colspan="2" class="totals-caption">@Model.Totals.Caption</td>
+        <td>@Model.Totals.Total.ToMoney()</td>
     </tr>
     </tfoot>
 </table>

@@ -74,6 +74,14 @@
     <Compile Include="Migrations\201710151146391_Incomes.Designer.cs">
       <DependentUpon>201710151146391_Incomes.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201710291104231_Accounts.cs" />
+    <Compile Include="Migrations\201710291104231_Accounts.Designer.cs">
+      <DependentUpon>201710291104231_Accounts.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201710291110414_AccountIsMandatory.cs" />
+    <Compile Include="Migrations\201710291110414_AccountIsMandatory.Designer.cs">
+      <DependentUpon>201710291110414_AccountIsMandatory.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NamedModelQueryRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -101,6 +109,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201710151146391_Incomes.resx">
       <DependentUpon>201710151146391_Incomes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710291104231_Accounts.resx">
+      <DependentUpon>201710291104231_Accounts.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710291110414_AccountIsMandatory.resx">
+      <DependentUpon>201710291110414_AccountIsMandatory.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

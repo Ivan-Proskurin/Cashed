@@ -1,6 +1,6 @@
-﻿using Cashed.DataAccess.Model;
-using Cashed.DataAccess.Model.Expenses;
+﻿using Cashed.DataAccess.Model.Expenses;
 using System.Data.Entity;
+using Cashed.DataAccess.Model.Base;
 using Cashed.DataAccess.Model.Incomes;
 
 namespace Cashed.DataAccess.Db
@@ -17,20 +17,14 @@ namespace Cashed.DataAccess.Db
         public DbSet<ExpenseBill> ExpenseBills { get; set; }
         public DbSet<IncomeType> IncomeTypes { get; set; }
         public DbSet<IncomeItem> IncomeItems { get; set; }
+        public DbSet<Account> Accounts { get; set; }
 
     protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            //modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
-
             modelBuilder.Entity<ExpenseItem>()
                 .HasRequired(e => e.Product)
                 .WithMany()
                 .WillCascadeOnDelete(false);
-
-            //modelBuilder.Entity<ExpenseItem>()
-            //    .HasRequired(e => e.Category)
-            //    .WithMany()
-            //    .WillCascadeOnDelete(false);
         }
     }
 }

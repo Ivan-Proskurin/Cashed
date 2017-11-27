@@ -1,7 +1,7 @@
 ﻿using Cashed.DataAccess.Contract;
 using Cashed.DataAccess.Db;
-using Logic.Cashed.Contract;
-using Logic.Cashed.Logic;
+using Cashed.Logic;
+using Cashed.Logic.Contract;
 using Ninject;
 using Ninject.Web.Common;
 
@@ -29,6 +29,8 @@ namespace Cashed.View.App_Start
             _kernel.Bind<IIncomeTypeQueries>().To<IncomeTypeQueries>();
             _kernel.Bind<IIncomeTypeCommands>().To<IncomeTypeCommands>();
             _kernel.Bind<IIncomeItemCommands>().To<IncomeItemCommands>();
+            _kernel.Bind<IAccountQueries>().To<AccountQueries>();
+            _kernel.Bind<IAccountCommands>().To<AccountCommands>();
         }
     }
 }
